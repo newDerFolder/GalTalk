@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://4fxph6fcwvd8"]
+
+[sub_resource type="GDScript" id="GDScript_ob0vc"]
+script/source = "extends ConfirmationDialog
+
+func _ready() -> void:
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"background_posX\"):
+		$Container/SpinBox.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"background_posX\"]
+		$Container/SpinBox2.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"background_posY\"]
+
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+func _on_confirmed() -> void:
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"background_posX\"]=$Container/SpinBox.value
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"background_posY\"]=$Container/SpinBox2.value
+	queue_free()
+	pass # Replace with function body.
+"
+
+[node name="CdBackgroundPos" type="ConfirmationDialog"]
+title = "设定背景图尺寸"
+size = Vector2i(200, 123)
+visible = true
+script = SubResource("GDScript_ob0vc")
+
+[node name="Container" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 74.0
+
+[node name="SpinBox" type="SpinBox" parent="Container"]
+layout_mode = 2
+min_value = -10000.0
+max_value = 10000.0
+prefix = "x="
+
+[node name="SpinBox2" type="SpinBox" parent="Container"]
+layout_mode = 2
+min_value = -10000.0
+max_value = 10000.0
+prefix = "y="
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

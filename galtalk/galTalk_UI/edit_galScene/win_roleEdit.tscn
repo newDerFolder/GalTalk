@@ -1,0 +1,376 @@
+[gd_scene load_steps=16 format=3 uid="uid://y6w7txvmd3vr"]
+
+[sub_resource type="GDScript" id="GDScript_vcjbi"]
+script/source = "extends ConfirmationDialog
+
+func _process(delta: float) -> void:
+	$ScrollContainer.size=size-Vector2i(0,25)
+	$ScrollContainer/HFlowContainer.size=size-Vector2i(0,25)
+"
+
+[sub_resource type="GDScript" id="GDScript_u82hb"]
+script/source = "extends FlowContainer
+
+
+
+func get_now_talk():
+	return get_mainNode().now_talk
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent().get_parent()
+
+func updata_roles():
+	$chooseRole/OptionButton.clear()
+	var cs=0
+	for i in get_mainNode().story_list[get_now_talk()][\"roles\"]:
+		$chooseRole/OptionButton.add_item(i[\"name\"],cs)
+	$chooseRole/OptionButton.select($chooseRole.now_role_id)
+
+func add_new_role(role_naem:String):
+	var role_id=get_mainNode().story_list[get_now_talk()][\"roles\"].size()
+	get_mainNode().story_list[get_now_talk()][\"roles\"].append({\"name\":role_naem,\"id\":role_id,\"role_kind\":\"photo\",\"photo_path\":\"\"})
+	$chooseRole.now_role_id=get_mainNode().story_list[get_now_talk()][\"roles\"].size()-1
+	$roleInfo/Label.text=get_mainNode().story_list[get_now_talk()][\"roles\"][$chooseRole.now_role_id][\"name\"]
+	updata_roles()
+
+func rename_role(role_id:int,new_name:String):
+	get_mainNode().story_list[get_now_talk()][\"roles\"][role_id][\"name\"]=new_name
+	updata_roles()
+
+func del_role(role_id:int):
+	if get_mainNode().story_list[get_now_talk()][\"roles\"].size()-1==role_id:
+		get_mainNode().now_talk-=1
+	get_mainNode().story_list[get_now_talk()][\"roles\"].remove_at(role_id)
+	updata_roles()
+"
+
+[sub_resource type="GDScript" id="GDScript_ppfam"]
+script/source = "extends HBoxContainer
+
+var now_role_name:String=\"\"
+var now_role_id=-1
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	now_role_id=index
+	now_role_name=$\"..\".get_mainNode().story_list[$\"..\".get_now_talk()][\"roles\"][now_role_id][\"name\"]
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_t231a"]
+script/source = "extends Button
+
+
+func _on_pressed() -> void:
+	$\"../..\".add_new_role(\"no name\")
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_4wvcp"]
+script/source = "extends Button
+
+var new_name=\"\"
+
+func _on_pressed() -> void:
+	$ConfirmationDialog.visible=true
+	pass # Replace with function body.
+
+
+func _on_confirmation_dialog_canceled() -> void:
+	$ConfirmationDialog.visible=false
+	pass # Replace with function body.
+
+
+func _on_confirmation_dialog_confirmed() -> void:
+	$\"../..\".rename_role($\"../../chooseRole\".now_role_id,$ConfirmationDialog/LineEdit.text)
+	$ConfirmationDialog.visible=false
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_hdm0c"]
+script/source = "extends Button
+
+
+
+func _on_confirmation_dialog_canceled() -> void:
+	$ConfirmationDialog.visible=false
+	pass # Replace with function body.
+
+
+func _on_confirmation_dialog_confirmed() -> void:
+	$\"../..\".del_role($\"../../chooseRole\".now_role_id)
+	$ConfirmationDialog.visible=false
+	pass # Replace with function body.
+
+
+func _on_pressed() -> void:
+	$ConfirmationDialog.visible=true
+	$ConfirmationDialog.title=\"删除 \"+$\"../../chooseRole\".now_role_name+\" ?\"
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_itpps"]
+script/source = "extends ConfirmationDialog
+
+
+func _on_confirmed() -> void:
+	
+	pass # Replace with function body.
+
+
+func _on_canceled() -> void:
+	visible=false
+	pass # Replace with function body.
+
+func show_rename():
+	position=Vector2(300,300)
+	visible=true
+"
+
+[sub_resource type="GDScript" id="GDScript_c1grs"]
+script/source = "extends HBoxContainer
+
+var now_role_kind=\"photo\"
+"
+
+[sub_resource type="GDScript" id="GDScript_vulrb"]
+script/source = "extends OptionButton
+
+
+func _on_item_selected(index: int) -> void:
+	$\"..\".now_role_kind=get_item_text(index)
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_ve13p"]
+script/source = "extends HBoxContainer
+
+var photo_path=\"\"
+"
+
+[sub_resource type="GDScript" id="GDScript_hghhc"]
+script/source = "extends HBoxContainer
+
+func _process(delta: float) -> void:
+	if $\"../../roleKind\".now_role_kind==\"photo\":
+		visible=true
+	else:
+		visible=false
+"
+
+[sub_resource type="GDScript" id="GDScript_cs7kc"]
+script/source = "extends LineEdit
+
+func _process(delta: float) -> void:
+	if $\"../..\".photo_path!=\"\":
+		text=$\"../..\".photo_path
+"
+
+[sub_resource type="GDScript" id="GDScript_7pbgb"]
+script/source = "extends Button
+
+
+func _ready() -> void:
+	pass
+
+
+
+func _on_pressed() -> void:
+	choose_brackground_res()
+
+
+func choose_brackground_res():
+	var file_dialog = FileDialog.new()
+	add_child(file_dialog)
+	# 设置对话框的模式（例如，打开文件）
+	file_dialog.file_mode = 0
+	# 设置对话框的标题
+	file_dialog.title = \"选择文件\"
+	# 设置允许的文件类型（可选）
+	file_dialog.filters = [\"*.bmp\", \"*.png\", \"*.jpg\", \"*.jpeg\", \"*.dds\", \"*.ktx\", \"*.exr\", \"*.hdr\", \"*.tga\", \"*.svg\", \"*.webp\"]
+	# 连接信号
+	file_dialog.connect(\"file_selected\", Callable(self, \"_on_file_selected\"))
+	# 显示对话框
+	file_dialog.popup_centered()
+# 回调函数：当用户选择文件时触发
+func _on_file_selected(path: String):
+	get_parent().get_parent().photo_path=path
+	print($\"../../..\".get_now_talk())
+	if $\"../../..\".get_now_talk()>=0 and $\"../../../chooseRole\".now_role_id>-1:
+		$\"../../..\".get_mainNode().story_list[$\"../../..\".get_now_talk()][\"roles\"][$\"../../../chooseRole\".now_role_id][\"photo_path\"]=path
+"
+
+[sub_resource type="GDScript" id="GDScript_mkqwy"]
+script/source = "extends HBoxContainer
+
+func _process(delta: float) -> void:
+	if $\"../../roleKind\".now_role_kind==\"photoGif\":
+		visible=true
+	else:
+		visible=false
+"
+
+[sub_resource type="GDScript" id="GDScript_g6tb3"]
+script/source = "extends HBoxContainer
+
+func _process(delta: float) -> void:
+	if $\"../../roleKind\".now_role_kind==\"live2D\":
+		visible=true
+	else:
+		visible=false
+"
+
+[node name="WinRoleEdit" type="ConfirmationDialog"]
+title = "角色编辑窗口"
+position = Vector2i(200, 100)
+size = Vector2i(416, 457)
+visible = true
+script = SubResource("GDScript_vcjbi")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(400, 400)
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 408.0
+offset_bottom = 408.0
+
+[node name="HFlowContainer" type="FlowContainer" parent="ScrollContainer"]
+layout_mode = 2
+script = SubResource("GDScript_u82hb")
+
+[node name="chooseRole" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
+layout_mode = 2
+script = SubResource("GDScript_ppfam")
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/chooseRole"]
+layout_mode = 2
+text = "当前编辑角色:"
+
+[node name="OptionButton" type="OptionButton" parent="ScrollContainer/HFlowContainer/chooseRole"]
+layout_mode = 2
+
+[node name="addRole" type="Button" parent="ScrollContainer/HFlowContainer/chooseRole"]
+layout_mode = 2
+text = "新增角色"
+script = SubResource("GDScript_t231a")
+
+[node name="roleInfo" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/roleInfo"]
+layout_mode = 2
+text = "roleName"
+
+[node name="rename" type="Button" parent="ScrollContainer/HFlowContainer/roleInfo"]
+layout_mode = 2
+text = "重命名"
+script = SubResource("GDScript_4wvcp")
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="ScrollContainer/HFlowContainer/roleInfo/rename"]
+title = "重命名角色"
+position = Vector2i(300, 300)
+
+[node name="LineEdit" type="LineEdit" parent="ScrollContainer/HFlowContainer/roleInfo/rename/ConfirmationDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+placeholder_text = "请输入角色新名称"
+
+[node name="del" type="Button" parent="ScrollContainer/HFlowContainer/roleInfo"]
+layout_mode = 2
+text = "删除"
+script = SubResource("GDScript_hdm0c")
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="ScrollContainer/HFlowContainer/roleInfo/del"]
+title = "是否删除该角色"
+position = Vector2i(300, 300)
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="ScrollContainer/HFlowContainer/roleInfo"]
+title = "重命名角色"
+position = Vector2i(300, 300)
+script = SubResource("GDScript_itpps")
+
+[node name="LineEdit" type="LineEdit" parent="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+placeholder_text = "请输入新的角色名称"
+
+[node name="roleKind" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
+layout_mode = 2
+script = SubResource("GDScript_c1grs")
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/roleKind"]
+layout_mode = 2
+text = "角色类型:"
+
+[node name="OptionButton" type="OptionButton" parent="ScrollContainer/HFlowContainer/roleKind"]
+layout_mode = 2
+selected = 0
+item_count = 5
+popup/item_0/text = "photo"
+popup/item_0/id = 0
+popup/item_1/text = "photoGif"
+popup/item_1/id = 1
+popup/item_2/text = "live2D"
+popup/item_2/id = 2
+popup/item_3/text = "video"
+popup/item_3/id = 3
+popup/item_4/text = "galOP"
+popup/item_4/id = 4
+script = SubResource("GDScript_vulrb")
+
+[node name="roleRes" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
+layout_mode = 2
+script = SubResource("GDScript_ve13p")
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/roleRes"]
+layout_mode = 2
+text = "角色资源:"
+
+[node name="photo" type="HBoxContainer" parent="ScrollContainer/HFlowContainer/roleRes"]
+layout_mode = 2
+script = SubResource("GDScript_hghhc")
+
+[node name="Sprite2D" type="LineEdit" parent="ScrollContainer/HFlowContainer/roleRes/photo"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+placeholder_text = "选择或输入图片路径"
+clear_button_enabled = true
+script = SubResource("GDScript_cs7kc")
+
+[node name="Button" type="Button" parent="ScrollContainer/HFlowContainer/roleRes/photo"]
+layout_mode = 2
+text = "选择"
+script = SubResource("GDScript_7pbgb")
+
+[node name="photoGif" type="HBoxContainer" parent="ScrollContainer/HFlowContainer/roleRes"]
+layout_mode = 2
+script = SubResource("GDScript_mkqwy")
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/roleRes/photoGif"]
+layout_mode = 2
+text = "开发中，敬请期待"
+
+[node name="live2D" type="HBoxContainer" parent="ScrollContainer/HFlowContainer/roleRes"]
+layout_mode = 2
+script = SubResource("GDScript_g6tb3")
+
+[node name="Label" type="Label" parent="ScrollContainer/HFlowContainer/roleRes/live2D"]
+layout_mode = 2
+text = "开发中，敬请期待"
+
+[connection signal="item_selected" from="ScrollContainer/HFlowContainer/chooseRole/OptionButton" to="ScrollContainer/HFlowContainer/chooseRole" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="ScrollContainer/HFlowContainer/chooseRole/addRole" to="ScrollContainer/HFlowContainer/chooseRole/addRole" method="_on_pressed"]
+[connection signal="pressed" from="ScrollContainer/HFlowContainer/roleInfo/rename" to="ScrollContainer/HFlowContainer/roleInfo/rename" method="_on_pressed"]
+[connection signal="canceled" from="ScrollContainer/HFlowContainer/roleInfo/rename/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/rename" method="_on_confirmation_dialog_canceled"]
+[connection signal="confirmed" from="ScrollContainer/HFlowContainer/roleInfo/rename/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/rename" method="_on_confirmation_dialog_confirmed"]
+[connection signal="pressed" from="ScrollContainer/HFlowContainer/roleInfo/del" to="ScrollContainer/HFlowContainer/roleInfo/del" method="_on_pressed"]
+[connection signal="canceled" from="ScrollContainer/HFlowContainer/roleInfo/del/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/del" method="_on_confirmation_dialog_canceled"]
+[connection signal="confirmed" from="ScrollContainer/HFlowContainer/roleInfo/del/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/del" method="_on_confirmation_dialog_confirmed"]
+[connection signal="canceled" from="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" method="_on_canceled"]
+[connection signal="confirmed" from="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" method="_on_confirmed"]
+[connection signal="item_selected" from="ScrollContainer/HFlowContainer/roleKind/OptionButton" to="ScrollContainer/HFlowContainer/roleKind/OptionButton" method="_on_item_selected"]
+[connection signal="pressed" from="ScrollContainer/HFlowContainer/roleRes/photo/Button" to="ScrollContainer/HFlowContainer/roleRes/photo/Button" method="_on_pressed"]

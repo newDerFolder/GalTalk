@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3 uid="uid://b38ueob0ny0h"]
+
+[sub_resource type="GDScript" id="GDScript_0afvj"]
+script/source = "extends Control
+"
+
+[sub_resource type="GDScript" id="GDScript_8i6rp"]
+script/source = "extends Control
+
+var show_talkListWindows=false
+
+func _process(delta: float) -> void:
+	if show_talkListWindows==false:
+		$btn_showTalkListWindow.visible=true
+		$Window.visible=false
+	else:
+		$btn_showTalkListWindow.visible=false
+		$Window.visible=true
+		$Window/ScrollContainer.size=$Window.size
+
+
+func _on_btn_show_talk_list_window_pressed() -> void:
+	show_talkListWindows=true
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_k17pp"]
+script/source = "extends Window
+
+
+"
+
+[node name="EditGalScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_0afvj")
+
+[node name="toolBar" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_8i6rp")
+
+[node name="btn_showTalkListWindow" type="Button" parent="toolBar"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "对话列表"
+
+[node name="Window" type="Window" parent="toolBar"]
+title = "对话列表"
+position = Vector2i(0, 36)
+script = SubResource("GDScript_k17pp")
+
+[node name="Label" type="Label" parent="toolBar/Window"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "上限:0/500"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="toolBar/Window"]
+offset_top = 20.0
+offset_right = 40.0
+offset_bottom = 60.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="toolBar/Window/ScrollContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="toolBar/btn_showTalkListWindow" to="toolBar" method="_on_btn_show_talk_list_window_pressed"]

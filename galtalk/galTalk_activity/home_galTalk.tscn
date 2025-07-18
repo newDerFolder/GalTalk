@@ -1,0 +1,84 @@
+[gd_scene load_steps=2 format=3 uid="uid://6y5ksax3b7k3"]
+
+[sub_resource type="GDScript" id="GDScript_tmgvd"]
+script/source = "extends Button
+
+
+func _on_pressed() -> void:
+	var a=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/ad_galTalkOverview.tscn\").instantiate()
+	add_child(a)
+	pass # Replace with function body.
+"
+
+[node name="HomeGalTalk" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="edit" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="edit"]
+layout_mode = 2
+text = "------------------------创作------------------------"
+
+[node name="newSceneAndEdit" type="Button" parent="edit"]
+layout_mode = 2
+text = "新建场景并编辑"
+
+[node name="openSceneAndEdit" type="Button" parent="edit"]
+layout_mode = 2
+text = "打开场景于场景编辑器"
+
+[node name="editStoryTree" type="Button" parent="edit"]
+layout_mode = 2
+text = "配置项目流程树"
+
+[node name="runScence" type="Button" parent="edit"]
+layout_mode = 2
+text = "单独运行GalTalk场景"
+
+[node name="runGalgameModel" type="Button" parent="edit"]
+layout_mode = 2
+text = "以纯视觉小说模式运行"
+
+[node name="projectSeeting" type="Button" parent="edit"]
+layout_mode = 2
+text = "项目设置"
+
+[node name="galtalkSetting" type="Button" parent="edit"]
+layout_mode = 2
+text = "GalTalk设定"
+
+[node name="about" type="Button" parent="edit"]
+layout_mode = 2
+text = "关于GalTalk"
+script = SubResource("GDScript_tmgvd")
+
+[node name="Label2" type="Label" parent="edit"]
+layout_mode = 2
+text = "------------------------学习------------------------"
+
+[node name="Button8" type="Button" parent="edit"]
+layout_mode = 2
+text = "GalTalk内置文档"
+
+[node name="Button9" type="Button" parent="edit"]
+layout_mode = 2
+text = "查看示例工程"
+
+[node name="Button10" type="Button" parent="edit"]
+layout_mode = 2
+text = "前往查看biliibili教程系列视频"
+
+[node name="other" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="pressed" from="edit/about" to="edit/about" method="_on_pressed"]

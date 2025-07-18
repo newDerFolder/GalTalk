@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://btd1aye51n2tn"]
+
+[sub_resource type="GDScript" id="GDScript_1n1w2"]
+script/source = "extends ConfirmationDialog
+
+func _ready() -> void:
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"talk_name\"):
+		$VBoxContainer/te_name.text=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_name\"]
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"talk_text\"):
+		$VBoxContainer/te_text.text=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_text\"]
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"talk_speed\"):
+		$VBoxContainer/SpinBox.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_speed\"]
+
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+
+func _on_confirmed() -> void:
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_name\"]=$VBoxContainer/te_name.text
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_text\"]=$VBoxContainer/te_text.text
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"talk_speed\"]=$VBoxContainer/SpinBox.value
+	queue_free()
+	pass # Replace with function body.
+"
+
+[node name="CdTalkText" type="ConfirmationDialog"]
+title = "对话文本"
+size = Vector2i(600, 446)
+visible = true
+script = SubResource("GDScript_1n1w2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 592.0
+offset_bottom = 397.0
+
+[node name="te_name" type="TextEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+placeholder_text = "请角色名称"
+
+[node name="te_text" type="TextEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+placeholder_text = "请输入文本"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+step = 0.001
+value = 0.001
+prefix = "文本显示间隔="
+suffix = "s"
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

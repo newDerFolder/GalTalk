@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw6abilhmiwqw"]
+
+[sub_resource type="GDScript" id="GDScript_vged0"]
+script/source = "extends FileDialog
+
+func _ready() -> void:
+	file_mode=0
+
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+func _on_file_selected(path: String) -> void:
+	return 
+"
+
+[node name="FdBackgroundChoose" type="FileDialog"]
+script = SubResource("GDScript_vged0")
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="file_selected" from="." to="." method="_on_file_selected"]

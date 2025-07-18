@@ -1,0 +1,6 @@
+{"file_name":"task1","file_path":"res://addons/galtalk/galTalk_workFile/","story_list":[{"background":"res://addons/galtalk/galTalk_sc/galTalkBackground.png",
+"roles":[
+	{"id":0,"name":"张三","photo_path":"","role_kind":"photo"},
+	{"id":1,"name":"李四","photo_path":"","role_kind":"photo"},
+	{"id":2,"name":"王五","photo_path":"","role_kind":"photo"}
+	]}]}

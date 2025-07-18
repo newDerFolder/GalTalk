@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnlwr8kjaeb1y"]
+
+[sub_resource type="GDScript" id="GDScript_1n1w2"]
+script/source = "extends ConfirmationDialog
+
+func _ready() -> void:
+	if get_parent().get_parent().file_name!=\"\":
+		$VBoxContainer/te_fileName.text=get_parent().get_parent().file_name
+	if get_parent().get_parent().file_path!=\"\":
+		$VBoxContainer/te_filePath.text=get_parent().get_parent().file_path
+
+func _process(delta: float) -> void:
+	if check_file_exists($VBoxContainer/te_filePath.text+$VBoxContainer/te_fileName.text+\".json\"):
+		$VBoxContainer/Label.visible=true
+	else:
+		$VBoxContainer/Label.visible=false
+	
+	if $VBoxContainer/te_fileName.text==\"\" or $VBoxContainer/te_filePath.text==\"\":
+		$VBoxContainer/Label2.visible=true
+		get_ok_button().visible=false
+	else:
+		$VBoxContainer/Label2.visible=false
+		get_ok_button().visible=true
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+
+func _on_confirmed() -> void:
+	if $VBoxContainer/te_fileName.text!=\"\" and $VBoxContainer/te_filePath.text!=\"\":
+		get_parent().get_parent().file_name=$VBoxContainer/te_fileName.text
+		get_parent().get_parent().file_path=$VBoxContainer/te_filePath.text
+		get_parent().get_parent().save_galTalkScene_file()
+		queue_free()
+	pass # Replace with function body.
+
+
+func check_file_exists(file_path: String) -> bool:
+	return FileAccess.file_exists(file_path)  # 使用file_exists方法检查文件是否存在
+"
+
+[node name="CdTalkText" type="ConfirmationDialog"]
+title = "保存GalTalk场景工程文件(json)"
+size = Vector2i(400, 215)
+visible = true
+script = SubResource("GDScript_1n1w2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 166.0
+
+[node name="te_fileName" type="TextEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+placeholder_text = "请输入文件名称"
+
+[node name="te_filePath" type="TextEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "res://addons/galtalk/galTalk_workFile/"
+placeholder_text = "请输入存储路径"
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+visible = false
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "已存在同名文件，继续保存将覆盖"
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+visible = false
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "文件或路径名称不能为空"
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

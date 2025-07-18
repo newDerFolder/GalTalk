@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxbw043qe0n63"]
+
+[sub_resource type="GDScript" id="GDScript_1n1w2"]
+script/source = "extends ConfirmationDialog
+
+func _ready() -> void:
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"role_posX\"):
+		$VBoxContainer/SpinBox.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"role_posX\"]
+		$VBoxContainer/SpinBox2.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"role_posY\"]
+
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+
+func _on_confirmed() -> void:
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"role_posX\"]=$VBoxContainer/SpinBox.value
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"role_posY\"]=$VBoxContainer/SpinBox2.value
+	queue_free()
+	pass # Replace with function body.
+"
+
+[node name="CdRoleScale" type="ConfirmationDialog"]
+title = "角色位置"
+size = Vector2i(200, 123)
+visible = true
+script = SubResource("GDScript_1n1w2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 74.0
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 10000.0
+prefix = "x="
+
+[node name="SpinBox2" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+min_value = -1000.0
+max_value = 10000.0
+prefix = "y="
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

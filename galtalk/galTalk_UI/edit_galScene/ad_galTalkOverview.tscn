@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0ig8cenjgu8j"]
+
+[sub_resource type="GDScript" id="GDScript_qjcn1"]
+script/source = "extends AcceptDialog
+
+func _process(delta: float) -> void:
+	$RichTextLabel.size=size-Vector2i(10,30)
+
+
+
+func _on_confirmed() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+func _on_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+"
+
+[node name="AdGalTalkOverview" type="AcceptDialog"]
+title = "about GalTalk"
+position = Vector2i(100, 100)
+size = Vector2i(800, 400)
+visible = true
+script = SubResource("GDScript_qjcn1")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 792.0
+offset_bottom = 351.0
+text = "GalTalk is a visual novel creation tool based on Godot. It allows you to create scenes and dialogues through visual editing and then compose them into a complete visual novel using the flowchart functionality. GalTalk also comes with features such as a save system, customizable UI, and various styles. If you are proficient in Godot programming, you can even integrate GalTalk into other types of game development to narrate stories, allowing your creations to extend beyond the realm of visual novels.
+When using GalTalk, you must declare its use in your work, including the splash screen and the credits section.
+Developer: Happy der someone (New Folder) (newDerFolder). Feel free to visit my social media profile.
+
+GalTalk 是一个基于 Godot 的视觉小说制作工具，可通过可视化编辑制作场景和对话，再通过流程树功能将场景们组成一个完整的视觉小说。并且 GalTalk 自带存档系统、自定义 UI 功能以及多种风格等功能。如果你会 Godot 编程，甚至可以在其他类型的游戏开发中调用 GalTalk 来叙述剧情，让你的作品不仅仅局限于视觉小说。
+使用 GalTalk 时，需要在作品中声明使用了 GalTalk，包括启动界面和关于鸣谢部分。
+开发者：快乐的某人（新建文件夹）（newDerFolder）。欢迎访问我的社交平台主页。
+
+GalTalkはGodotをベースにしたビジュアルノベル制作ツールで、ビジュアルエディターでシーンや会話を制作し、フローチャート機能でそれらのシーンを組み合わせることで、完成したビジュアルノベルを作成することができます。さらに、GalTalkにはセーブシステムやカスタマイズ可能なUI、スタイルなども搭載されています。Godotプログラミングが得意であれば、GalTalkを他のタイプのゲーム開発に組み込んでストーリーを叙述することも可能で、作品をビジュアルノベルに限定する必要がありません。
+GalTalkを使用する場合は、作品内（起動画面やクレジットなど）にGalTalkの使用を明記する必要があります。
+開発者：Happy der someone（New Folder）（newDerFolder）。私のソーシャルメディアのプロフィールを訪れてください。
+
+GalTalk은 Godot 기반의 비주얼 노벨 제작 도구로, 시각화 편집기를 통해 장면과 대화를 만들고, 플로우 트리 기능을 사용하여 그 장면들을 하나의 완성된 비주얼 노벨로 구성할 수 있습니다. 또한 GalTalk은 저장 시스템, 사용자 정의 UI 기능, 스타일 등이 내장되어 있습니다. Godot 프로그래밍에 능숙하다면, GalTalk을 다른 유형의 게임 개발에 호출하여 스토리를 전개할 수도 있어, 작품을 비주얼 노벨에만 제한할 필요가 없습니다.
+GalTalk을 사용할 때는 작품 내에서 (시작 화면, 감사의 말 등) GalTalk의 사용을 반드시 표시해야 합니다.
+개발자: 행복한 der someone (새 폴더) (newDerFolder). 제 소셜 미디어 프로필을 방문해 주세요.
+
+GalTalk — это инструмент для создания визуальных романов на базе Godot. С его помощью вы можете создавать сцены и диалоги с помощью визуального редактора, а затем собирать их в完整的视觉小说通过流程树功能。Кроме того，GalTalk имеет встроенные функции，如 сохранение игры，настройка пользовательского интерфейса и различные стили. Если вы знаете программирование на Godot，то можете использовать GalTalk даже в разработке других типов игр для повествования историй，позволяя вашим работам не ограничиваться только визуальными романами.
+При использовании GalTalk необходимо указать на использование этого инструмента в своем произведении, включая экран загрузки и раздел благодарностей.
+Разработчик: Счастливый кто-то (Создать новую папку) (newDerFolder). Заходите на мою страницу в социальной сети.
+
+GalTalk 是一個基於 Godot 的視覺小說製作工具，可透過視覺化編輯製作場景和對話，再透過流程樹功能將場景們組成一個完整的視覺小說。並且 GalTalk 自帶存檔系統、自定義 UI 功能以及多種風格等功能。如果你會 Godot 程式設計，甚至可以在其他類型的遊戲開發中調用 GalTalk 來敘述劇情，讓你的作品不僅僅局限於視覺小說。
+使用 GalTalk 時，需要在作品中聲明使用了 GalTalk，包括啟動界面和關於鳴謝部分。
+開發者：快樂的某人（新建文件夾）（newDerFolder）。歡迎參觀我的社交平台主頁。"
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

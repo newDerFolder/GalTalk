@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bcdhn5vlfc06l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0af1x"]
+
+[resource]
+MenuButton/styles/normal = SubResource("StyleBoxFlat_0af1x")
