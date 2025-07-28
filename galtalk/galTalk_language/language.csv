@@ -1,0 +1,11 @@
+id,en,zh,ja,ko,ru,fr
+file,file,文件,ファイル,파일,файл,fichier
+project,project,项目,プロジェクト,프로젝트,проект,projet
+scene,scene,场景,シーン,장면,сцена,scène
+background,background,背景,背景,배경,фон,fond
+music,music,音乐,音楽,음악,музыка,musique
+sound,sound,音效,効果音,효과음,звуковые эффекты,effet sonore
+character,character,角色,キャラクター,캐릭터,персонаж,personnage
+text,text,文本,テキスト,텍스트,текст,texte
+talk,talk,对话,会話,대화,диалог,dialogue
+talk list,talk list,对话列表,会話リスト,대화 목록,список диалогов,liste de dialogues

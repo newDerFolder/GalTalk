@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b38ueob0ny0h"]
+[gd_scene load_steps=23 format=3 uid="uid://b38ueob0ny0h"]
 
 [ext_resource type="Texture2D" uid="uid://bt5rt80vor663" path="res://addons/galtalk/galTalk_sc/icon_talkList_window.png" id="1_0afvj"]
 [ext_resource type="Texture2D" uid="uid://enqi2gexdxjy" path="res://addons/galtalk/galTalk_sc/ui_zungXin.png" id="1_ixfk6"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://btni1px1avmf3" path="res://addons/galtalk/galTalk_sc/icon_music.png" id="5_mfsrm"]
 [ext_resource type="Texture2D" uid="uid://dac5fv4lqrwj3" path="res://addons/galtalk/galTalk_sc/icon_role.png" id="6_b8w0n"]
 [ext_resource type="Texture2D" uid="uid://stnv4qv7cf0p" path="res://addons/galtalk/galTalk_sc/icon_sound.png" id="6_ggjxu"]
-[ext_resource type="Texture2D" uid="uid://bo3xbrc2siynl" path="res://addons/galtalk/galTalk_sc/icon_text.png" id="10_svw3l"]
 
 [sub_resource type="GDScript" id="GDScript_0afvj"]
 script/source = "extends Control
@@ -22,11 +21,9 @@ var file_path:String=\"\"
 var file_name:String=\"\"
 
 var galTalk_setting={
-	\"language\":\"zh\",
+	\"language\":\"en\",
 }
 
-func chang_talk():
-	$game.chang_talk()
 
 func load_galTalkSetting():
 	var path=\"res://addons/galtalk/galTalk_data/galTalk_setting.json\"
@@ -141,42 +138,54 @@ func _process(delta: float) -> void:
 			$backGround.position.y=$\"..\".story_list[$\"..\".now_talk][\"background_posY\"]
 	else:
 		visible=false
-
-func chang_talk():
-	$rolesGroup.chang_talk()
 "
 
 [sub_resource type="GDScript" id="GDScript_ixfk6"]
-script/source = "extends Node2D
+script/source = "extends Sprite2D
+
+var is_mouse_pressed = false
+var object_name=\"role\"
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == 1:
+			is_mouse_pressed = event.pressed
 
 func _process(delta: float) -> void:
-	pass
+	if Input.is_action_pressed(\"ui_text_completion_query\"):
+		$Sprite2D.visible=true
+	else:
+		$Sprite2D.visible=false
+		
+	if abs(position - get_global_mouse_position()).x < 25 and abs(position - get_global_mouse_position()).y < 25 and is_mouse_pressed and  get_parent().now_move==\"\" and Input.is_action_pressed(\"ui_text_completion_query\"):
+		get_parent().now_move=object_name
+	if  get_parent().now_move==object_name :
+		if Input.is_action_pressed(\"ui_text_completion_query\") and is_mouse_pressed:
+			position = get_global_mouse_position()
+			$\"../..\".story_list[$\"../..\".now_talk][\"role_posX\"]=position.x
+			$\"../..\".story_list[$\"../..\".now_talk][\"role_posY\"]=position.y
+		else:
+			get_parent().now_move=\"\"
 
-func upDataGameRoleList():
-	var role_num=0
-	for role in get_children():
-		role.upDataRole()
-	for role in get_children():
-		role_num+=1
-	if role_num<$\"../..\".story_list[$\"../..\".now_talk][\"roles\"].size():
-		var new_role=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
-		new_role.id=role_num
-		add_child(new_role)
-		new_role.upDataRole()
-
-func add_newRole():
-	var num=0
-	for role in $\"../..\".story_list[$\"../..\".now_talk][\"roles\"]:
-		var new_role=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
-		new_role.id=num
-		add_child(new_role)
-		new_role.upDataRole()
-		num+=1
-
-func chang_talk():
-	for role in get_children():
-		role.queue_free()
-	add_newRole()
+	if get_parent().get_parent().now_talk>-1 and get_parent().get_parent().now_talk<get_parent().get_parent().story_list.size():
+		if $\"../..\".story_list[$\"../..\".now_talk].has(\"role\"):
+			texture=load($\"../..\".story_list[$\"../..\".now_talk][\"role\"])
+		else:
+			texture=null         
+		if $\"../..\".story_list[$\"../..\".now_talk].has(\"role_scaleX\"):
+			scale.x=$\"../..\".story_list[$\"../..\".now_talk][\"role_scaleX\"]
+			scale.y=$\"../..\".story_list[$\"../..\".now_talk][\"role_scaleY\"]
+		else:
+			scale.x=1
+			scale.y=1
+		if $\"../..\".story_list[$\"../..\".now_talk].has(\"role_posX\"):
+			position.x=$\"../..\".story_list[$\"../..\".now_talk][\"role_posX\"]
+			position.y=$\"../..\".story_list[$\"../..\".now_talk][\"role_posY\"]
+		else:
+			position.x=0
+			position.y=0
+	else:
+		texture=load(\"\") 
 "
 
 [sub_resource type="GDScript" id="GDScript_svw3l"]
@@ -443,9 +452,6 @@ var setting_AutoScoEnd=true
 func _ready() -> void:
 	add_talk()
 
-func chang_now_talk():
-	$\"../..\".chang_talk()
-
 func add_talk():
 	var btn=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/btn_talk.tscn\")
 	for i in range(500):
@@ -503,8 +509,11 @@ layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 
-[node name="rolesGroup" type="Node2D" parent="game"]
+[node name="role" type="Sprite2D" parent="game"]
 script = SubResource("GDScript_ixfk6")
+
+[node name="Sprite2D" type="Sprite2D" parent="game/role"]
+texture = ExtResource("1_ixfk6")
 
 [node name="text" type="Control" parent="game"]
 anchors_preset = 0
@@ -575,7 +584,7 @@ layout_mode = 2
 
 [node name="mb_file" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "file"
+text = "文件"
 icon = ExtResource("1_rnlxc")
 item_count = 4
 popup/item_0/text = "新建"
@@ -593,7 +602,7 @@ layout_mode = 2
 
 [node name="mb_project" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "project"
+text = "项目"
 icon = ExtResource("3_myd5j")
 item_count = 2
 popup/item_0/text = "配置流程树"
@@ -606,7 +615,7 @@ layout_mode = 2
 
 [node name="mb_scene" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "scene"
+text = "场景"
 icon = ExtResource("4_raljn")
 item_count = 3
 popup/item_0/text = "input"
@@ -621,7 +630,7 @@ layout_mode = 2
 
 [node name="mb_background" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "background"
+text = "底图"
 icon = ExtResource("2_8i6rp")
 item_count = 3
 popup/item_0/text = "选择背景图片"
@@ -637,7 +646,7 @@ layout_mode = 2
 
 [node name="mb_music" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "music"
+text = "音乐"
 icon = ExtResource("5_mfsrm")
 item_count = 4
 popup/item_0/text = "设定背景音乐"
@@ -654,7 +663,7 @@ layout_mode = 2
 
 [node name="mb_sound" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "sound"
+text = "音效"
 icon = ExtResource("6_ggjxu")
 item_count = 4
 popup/item_0/text = "设定音效"
@@ -671,7 +680,7 @@ layout_mode = 2
 
 [node name="mb_role" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "character"
+text = "角色"
 icon = ExtResource("6_b8w0n")
 item_count = 7
 popup/item_0/text = "编辑器窗口"
@@ -695,8 +704,8 @@ layout_mode = 2
 
 [node name="mb_text" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = "text"
-icon = ExtResource("10_svw3l")
+text = "对话"
+icon = ExtResource("5_ja6th")
 item_count = 4
 popup/item_0/text = "文本编辑"
 popup/item_0/id = 0
@@ -711,19 +720,14 @@ script = SubResource("GDScript_qrqo1")
 [node name="btn_showTalkListWindow" type="Button" parent="toolBar/FlowContainer"]
 visible = false
 layout_mode = 2
-text = "talk list"
+text = "对话列表"
 icon = ExtResource("1_0afvj")
 
 [node name="VSeparator8" type="VSeparator" parent="toolBar/FlowContainer"]
 layout_mode = 2
 
-[node name="MenuButton" type="MenuButton" parent="toolBar/FlowContainer"]
-layout_mode = 2
-text = "talk"
-icon = ExtResource("5_ja6th")
-
 [node name="Window" type="Window" parent="toolBar"]
-title = "talk list"
+title = "对话列表"
 position = Vector2i(1000, 50)
 size = Vector2i(200, 300)
 script = SubResource("GDScript_k17pp")

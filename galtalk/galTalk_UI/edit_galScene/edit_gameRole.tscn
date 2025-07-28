@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsrbgkdk1s5mw"]
+
+[sub_resource type="GDScript" id="GDScript_xnvr3"]
+script/source = "extends Node2D
+
+var id=-1
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent()
+func get_roleData():
+	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][id]
+
+func upDataRole():
+	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size():
+		queue_free()
+	else:
+		basic_upData()
+		kind_upData()
+
+func basic_upData():
+	position=Vector2(get_roleData()[\"role_posX\"],get_roleData()[\"role_posY\"])
+	scale=Vector2(get_roleData()[\"role_scaleX\"],get_roleData()[\"role_scaleY\"])
+	rotation_degrees=get_roleData()[\"role_rot\"]
+	visible=get_roleData()[\"role_visible\"]
+
+
+func kind_upData():
+	if get_roleData()[\"role_kind\"]==\"photo\":
+			$image/photo.texture=load(get_roleData()[\"photo_path\"])
+"
+
+[node name="EditGameRole" type="Node2D"]
+script = SubResource("GDScript_xnvr3")
+
+[node name="image" type="Node2D" parent="."]
+
+[node name="photo" type="Sprite2D" parent="image"]

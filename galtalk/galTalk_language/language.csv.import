@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dvj6teyxaxis5"
+
+[deps]
+
+files=["res://addons/galtalk/galTalk_language/language.en.translation", "res://addons/galtalk/galTalk_language/language.zh.translation", "res://addons/galtalk/galTalk_language/language.ja.translation", "res://addons/galtalk/galTalk_language/language.ko.translation", "res://addons/galtalk/galTalk_language/language.ru.translation", "res://addons/galtalk/galTalk_language/language.fr.translation"]
+
+source_file="res://addons/galtalk/galTalk_language/language.csv"
+dest_files=["res://addons/galtalk/galTalk_language/language.en.translation", "res://addons/galtalk/galTalk_language/language.zh.translation", "res://addons/galtalk/galTalk_language/language.ja.translation", "res://addons/galtalk/galTalk_language/language.ko.translation", "res://addons/galtalk/galTalk_language/language.ru.translation", "res://addons/galtalk/galTalk_language/language.fr.translation"]
+
+[params]
+
+compress=true
+delimiter=0

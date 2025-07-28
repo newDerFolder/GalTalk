@@ -11,7 +11,7 @@ func _process(delta: float) -> void:
 	else:
 		self_modulate=Color(1,1,1,1)
 	if id<get_gen().story_list.size():
-		text=str(id)+\" test测试剧本名称\"
+		text=str(id)+\" \"+get_gen().story_list[id][\"text_role\"]+\":\"+get_gen().story_list[id][\"text_textbox\"]
 		
 		visible=true
 	elif id==get_gen().story_list.size():
@@ -27,20 +27,26 @@ func get_gen():
 func _on_pressed() -> void:
 	if id<get_gen().story_list.size():
 		get_gen().now_talk=id
+		chang_now_talk()
 	elif id==get_gen().story_list.size():
 		if get_gen().story_list.size()<500:
 			get_gen().add_new_talk()
 			get_gen().now_talk=id
+			chang_now_talk()
 		else:
 			pass
 	else:
 		visible=false
 	pass # Replace with function body.
+
+func chang_now_talk():
+	get_parent().get_parent().get_parent().chang_now_talk()
 "
 
 [node name="BtnTalk" type="Button"]
 custom_minimum_size = Vector2(100, 0)
 text = "1 文件夹:点击开始进行galTalk基本教学"
+alignment = 0
 script = SubResource("GDScript_yyila")
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
