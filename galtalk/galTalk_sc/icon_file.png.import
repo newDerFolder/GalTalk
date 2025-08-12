@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cm0e1mgj7g4td"
-path="res://.godot/imported/icon_file.png-a5d02d3c18b94b3ba3e4d1cb896e725d.ctex"
+path="res://.godot/imported/icon_file.png-f8cb94bb8fc4eebb37c3c52723d9c1d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/galtalk/galTalk_sc/icon_file.png"
-dest_files=["res://.godot/imported/icon_file.png-a5d02d3c18b94b3ba3e4d1cb896e725d.ctex"]
+source_file="res://galtalk/galTalk_sc/icon_file.png"
+dest_files=["res://.godot/imported/icon_file.png-f8cb94bb8fc4eebb37c3c52723d9c1d9.ctex"]
 
 [params]
 

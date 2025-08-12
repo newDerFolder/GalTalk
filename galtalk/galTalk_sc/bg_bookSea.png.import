@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwfvmws3tdc4p"
-path="res://.godot/imported/bg_bookSea.png-d8a91c33496959c890a3116882bec121.ctex"
+path="res://.godot/imported/bg_bookSea.png-1570959c4f32ca6a171a27dfd654988d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/galtalk/galTalk_sc/bg_bookSea.png"
-dest_files=["res://.godot/imported/bg_bookSea.png-d8a91c33496959c890a3116882bec121.ctex"]
+source_file="res://galtalk/galTalk_sc/bg_bookSea.png"
+dest_files=["res://.godot/imported/bg_bookSea.png-1570959c4f32ca6a171a27dfd654988d.ctex"]
 
 [params]
 

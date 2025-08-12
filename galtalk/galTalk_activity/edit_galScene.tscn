@@ -1,17 +1,17 @@
-[gd_scene load_steps=24 format=3 uid="uid://b38ueob0ny0h"]
+[gd_scene load_steps=26 format=3 uid="uid://b38ueob0ny0h"]
 
-[ext_resource type="Texture2D" uid="uid://bt5rt80vor663" path="res://addons/galtalk/galTalk_sc/icon_talkList_window.png" id="1_0afvj"]
-[ext_resource type="Texture2D" uid="uid://enqi2gexdxjy" path="res://addons/galtalk/galTalk_sc/ui_zungXin.png" id="1_ixfk6"]
-[ext_resource type="Texture2D" uid="uid://cm0e1mgj7g4td" path="res://addons/galtalk/galTalk_sc/icon_file.png" id="1_rnlxc"]
-[ext_resource type="Texture2D" uid="uid://cbuy2thq7el8v" path="res://addons/galtalk/galTalk_sc/icon_galTalkNoKuang.png" id="1_vgtvq"]
-[ext_resource type="Texture2D" uid="uid://b4ilogcochuqa" path="res://addons/galtalk/galTalk_sc/icon_background.png" id="2_8i6rp"]
-[ext_resource type="Texture2D" uid="uid://cyh424cs2a8lw" path="res://addons/galtalk/galTalk_sc/icon_project.png" id="3_myd5j"]
-[ext_resource type="Texture2D" uid="uid://kldru8w476un" path="res://addons/galtalk/galTalk_sc/icon_scence.png" id="4_raljn"]
-[ext_resource type="Texture2D" uid="uid://b87uiw5sj3ux7" path="res://addons/galtalk/galTalk_sc/icon_talk.png" id="5_ja6th"]
-[ext_resource type="Texture2D" uid="uid://btni1px1avmf3" path="res://addons/galtalk/galTalk_sc/icon_music.png" id="5_mfsrm"]
-[ext_resource type="Texture2D" uid="uid://dac5fv4lqrwj3" path="res://addons/galtalk/galTalk_sc/icon_role.png" id="6_b8w0n"]
-[ext_resource type="Texture2D" uid="uid://stnv4qv7cf0p" path="res://addons/galtalk/galTalk_sc/icon_sound.png" id="6_ggjxu"]
-[ext_resource type="Texture2D" uid="uid://bo3xbrc2siynl" path="res://addons/galtalk/galTalk_sc/icon_text.png" id="10_svw3l"]
+[ext_resource type="Texture2D" uid="uid://enqi2gexdxjy" path="res://galtalk/galTalk_sc/ui_zungXin.png" id="1_ixfk6"]
+[ext_resource type="Texture2D" uid="uid://cm0e1mgj7g4td" path="res://galtalk/galTalk_sc/icon_file.png" id="1_rnlxc"]
+[ext_resource type="Texture2D" uid="uid://cbuy2thq7el8v" path="res://galtalk/galTalk_sc/icon_galTalkNoKuang.png" id="1_vgtvq"]
+[ext_resource type="Texture2D" uid="uid://b4ilogcochuqa" path="res://galtalk/galTalk_sc/icon_background.png" id="2_8i6rp"]
+[ext_resource type="Texture2D" uid="uid://cyh424cs2a8lw" path="res://galtalk/galTalk_sc/icon_project.png" id="3_myd5j"]
+[ext_resource type="Texture2D" uid="uid://kldru8w476un" path="res://galtalk/galTalk_sc/icon_scence.png" id="4_raljn"]
+[ext_resource type="Texture2D" uid="uid://b87uiw5sj3ux7" path="res://galtalk/galTalk_sc/icon_talk.png" id="5_ja6th"]
+[ext_resource type="Texture2D" uid="uid://btni1px1avmf3" path="res://galtalk/galTalk_sc/icon_music.png" id="5_mfsrm"]
+[ext_resource type="Texture2D" uid="uid://dac5fv4lqrwj3" path="res://galtalk/galTalk_sc/icon_role.png" id="6_b8w0n"]
+[ext_resource type="Texture2D" uid="uid://stnv4qv7cf0p" path="res://galtalk/galTalk_sc/icon_sound.png" id="6_ggjxu"]
+[ext_resource type="Texture2D" uid="uid://bo3xbrc2siynl" path="res://galtalk/galTalk_sc/icon_text.png" id="10_svw3l"]
+[ext_resource type="Texture2D" uid="uid://o25iorfr3htm" path="res://galtalk/galTalk_sc/icon_run.png" id="12_8qhn5"]
 
 [sub_resource type="GDScript" id="GDScript_0afvj"]
 script/source = "extends Control
@@ -21,15 +21,25 @@ var operatio_history=[]
 var file_path:String=\"\"
 var file_name:String=\"\"
 
-var galTalk_setting={
-	\"language\":\"zh\",
-}
+
+func message(messageText):
+	var mes=preload(\"res://galtalk/galTalk_UI/message/rtlBoxMessage.tscn\").instantiate()
+	mes.position=Vector2(300,300)
+	mes.scale=Vector2(2,2)
+	mes.text=messageText
+	$message.add_child(mes)
+
 
 func chang_talk():
 	$game.chang_talk()
 
+
+###编辑器设置###
+var galTalk_setting={
+	\"language\":\"zh\",
+}
 func load_galTalkSetting():
-	var path=\"res://addons/galtalk/galTalk_data/galTalk_setting.json\"
+	var path=\"res://galtalk/galTalk_data/galTalk_setting.json\"
 	if not FileAccess.file_exists(path):
 		print(\"galTalk file model:galTalk setting file not found.\")
 		return
@@ -46,7 +56,7 @@ func load_galTalkSetting():
 	if data.has(\"galTalk_setting\"):
 		galTalk_setting=data[\"galTalk_setting\"]
 func save_galTalkSetting():
-	var path=\"res://addons/galtalk/galTalk_data/galTalk_setting.json\"
+	var path=\"res://galtalk/galTalk_data/galTalk_setting.json\"
 	var data = galTalk_setting
 	var json = JSON.new()
 	var json_string = json.stringify(data)# 将字典序列化为 JSON 字符串
@@ -54,13 +64,14 @@ func save_galTalkSetting():
 	file.store_line(json_string)  # 写入 JSON 数据
 	file.close()  # 关闭文件
 	print(\"galTalk file model:galTalk setting file saved to: \", path)
-
+###编辑器设置###
 
 func _ready() -> void:
 	add_new_talk()
 	now_talk=0
 	load_galTalkSetting()
 	TranslationServer.set_locale(galTalk_setting[\"language\"])
+	chang_talk()
 
 func add_new_talk():
 	if now_talk>-1:
@@ -76,14 +87,17 @@ func add_new_talk():
 
 func empty_talk():
 	var temp_talk={
-		\"background\":\"res://addons/galtalk/galTalk_sc/galTalkBackground.png\",
+		\"talk_kind\":\"common\",
+		\"talk_goto\":\"next\",
+		\"background\":\"res://galtalk/galTalk_sc/galTalkBackground.png\",
 		#\"background_sizeX\":1280,
 		#\"background_sizeY\":720,
 		#\"background_posX\":0,
 		#\"background_posY\":0,
 		\"roles\":[],
 		\"text_role\":\"无名氏\",
-		\"text_textbox\":\"请输入内容\"
+		\"text_textbox\":\"请输入内容\",
+		\"text_printTime\":0.001,
 		}
 	return temp_talk
 
@@ -96,6 +110,7 @@ func save_galTalkScene_file():
 	file.store_line(json_string)  # 写入 JSON 数据
 	file.close()  # 关闭文件
 	print(\"galTalk file model:galTalk scene file saved to: \", path)
+	message(\"[color=green]GalTalk已经保存文件\")
 
 # 从文件加载数据
 func load_galTalkScene_file(path):
@@ -119,6 +134,8 @@ func load_galTalkScene_file(path):
 		file_path=data[\"file_path\"]
 		if story_list.size()>0:
 			now_talk=0
+	chang_talk()
+	message(\"[color=green]GalTalk已经读取文件\")
 "
 
 [sub_resource type="GDScript" id="GDScript_rnlxc"]
@@ -132,7 +149,7 @@ func _process(delta: float) -> void:
 		if $\"..\".story_list[$\"..\".now_talk].has(\"background\"):
 			$backGround.texture=load($\"..\".story_list[$\"..\".now_talk][\"background\"])
 		else:
-			$backGround.texture=load(\"res://addons/galtalk/galTalk_sc/galTalkBackground.png\")
+			$backGround.texture=load(\"res://galtalk/galTalk_sc/galTalkBackground.png\")
 		if $\"..\".story_list[$\"..\".now_talk].has(\"background_sizeX\"):
 			$backGround.size.x=$\"..\".story_list[$\"..\".now_talk][\"background_sizeX\"]
 			$backGround.size.y=$\"..\".story_list[$\"..\".now_talk][\"background_sizeY\"]
@@ -144,6 +161,7 @@ func _process(delta: float) -> void:
 
 func chang_talk():
 	$rolesGroup.chang_talk()
+	$text.chang_talk()
 "
 
 [sub_resource type="GDScript" id="GDScript_ixfk6"]
@@ -159,16 +177,18 @@ func upDataGameRoleList():
 	for role in get_children():
 		role_num+=1
 	if role_num<$\"../..\".story_list[$\"../..\".now_talk][\"roles\"].size():
-		var new_role=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
+		var new_role=preload(\"res://galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
 		new_role.id=role_num
+		new_role.talk_id=$\"../..\".now_talk
 		add_child(new_role)
 		new_role.upDataRole()
 
 func add_newRole():
 	var num=0
 	for role in $\"../..\".story_list[$\"../..\".now_talk][\"roles\"]:
-		var new_role=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
+		var new_role=preload(\"res://galtalk/galTalk_UI/edit_galScene/edit_gameRole.tscn\").instantiate()
 		new_role.id=num
+		new_role.talk_id=$\"../..\".now_talk
 		add_child(new_role)
 		new_role.upDataRole()
 		num+=1
@@ -204,7 +224,8 @@ func _process(delta: float) -> void:
 			$\"../..\".story_list[$\"../..\".now_talk][\"text_posY\"]=position.y
 		else:
 			get_parent().now_move=\"\"
-	
+
+func chang_talk():
 	if get_parent().get_parent().now_talk>-1 and get_parent().get_parent().now_talk<get_parent().get_parent().story_list.size():
 		visible=true
 		if $\"../..\".story_list[$\"../..\".now_talk].has(\"text_posX\"):
@@ -212,7 +233,7 @@ func _process(delta: float) -> void:
 			position.y=$\"../..\".story_list[$\"../..\".now_talk][\"text_posY\"]
 		else:
 			position.x=300
-			position.y=450
+			position.y=400
 		if $\"../..\".story_list[$\"../..\".now_talk].has(\"text_role\"):
 			$rtl_name.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_role\"]
 		else:
@@ -228,28 +249,6 @@ func _process(delta: float) -> void:
 [sub_resource type="GDScript" id="GDScript_8i6rp"]
 script/source = "extends Control
 
-var show_talkListWindows=true
-
-func _process(delta: float) -> void:
-	if show_talkListWindows==false:
-		$FlowContainer/btn_showTalkListWindow.visible=true
-		$Window.visible=false
-	else:
-		$FlowContainer/btn_showTalkListWindow.visible=false
-		$Window.visible=true
-		$Window/ScrollContainer.size=$Window.size-Vector2i(0,30)
-		$Window/Panel.size.x=$Window.size.x
-
-func _on_btn_show_talk_list_window_pressed() -> void:
-	show_talkListWindows=true
-	pass # Replace with function body.
-
-
-func _on_window_close_requested() -> void:
-	show_talkListWindows=false
-	$Window.position=Vector2(1000,50)
-	$Window.size=Vector2i(200,300)
-	pass # Replace with function body.
 
 
 func _on_btn_set_background_pressed() -> void:
@@ -278,11 +277,10 @@ script/source = "extends MenuButton
 func _ready() -> void:
 	get_popup().connect(\"id_pressed\",  Callable(self, \"_on_menu_button_pressed\"))
 
-
 func _on_menu_button_pressed(id):
 	match id:
 		0:
-			var about=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/ad_galTalkOverview.tscn\").instantiate()
+			var about=preload(\"res://galtalk/galTalk_UI/edit_galScene/ad_galTalkOverview.tscn\").instantiate()
 			add_child(about)
 		1:
 			OS.shell_open(\"https://space.bilibili.com/588753697\")
@@ -303,7 +301,7 @@ func _on_menu_button_pressed(id):
 		1:
 			choose_load_res()
 		2:
-			var cd_save=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_fileSaveName.tscn\").instantiate()
+			var cd_save=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_fileSaveName.tscn\").instantiate()
 			cd_save.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_save)
 
@@ -315,7 +313,7 @@ func choose_load_res():
 	# 设置对话框的标题
 	file_dialog.title = \"选择文件\"
 	
-	file_dialog.current_dir = \"res://addons/galtalk/galTalk_workFile/\"
+	file_dialog.current_dir = \"res://galtalk/galTalk_workFile/\"
 	# 设置允许的文件类型（可选）
 	file_dialog.filters = [\"*.json\"]
 	# 连接信号
@@ -325,6 +323,47 @@ func choose_load_res():
 # 回调函数：当用户选择文件时触发
 func _on_file_selected(path: String):
 	$\"../../..\".load_galTalkScene_file(path)
+"
+
+[sub_resource type="GDScript" id="GDScript_8qhn5"]
+script/source = "extends MenuButton
+
+func _ready() -> void:
+	#connect(get_popup(), self, \"_on_menu_button_pressed\")
+	get_popup().connect(\"id_pressed\",  Callable(self, \"_on_menu_button_pressed\"))
+
+
+func _on_menu_button_pressed(id):
+	match id:
+		0:
+			choose_brackground_res()
+		1:
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_backgroundSize.tscn\").instantiate()
+			cd_sizeSet.position=Vector2(200,200)
+			get_parent().get_parent().add_child(cd_sizeSet)
+		2:
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_backgroundPos.tscn\").instantiate()
+			cd_sizeSet.position=Vector2(200,200)
+			get_parent().get_parent().add_child(cd_sizeSet)
+
+func choose_brackground_res():
+	var file_dialog = FileDialog.new()
+	add_child(file_dialog)
+	# 设置对话框的模式（例如，打开文件）
+	file_dialog.file_mode = 0
+	# 设置对话框的标题
+	file_dialog.title = \"选择文件\"
+	# 设置允许的文件类型（可选）
+	file_dialog.filters = [\"*.bmp\", \"*.png\", \"*.jpg\", \"*.jpeg\", \"*.dds\", \"*.ktx\", \"*.exr\", \"*.hdr\", \"*.tga\", \"*.svg\", \"*.webp\"]
+	# 连接信号
+	file_dialog.connect(\"file_selected\", Callable(self, \"_on_file_selected\"))
+	# 显示对话框
+	file_dialog.popup_centered()
+# 回调函数：当用户选择文件时触发
+func _on_file_selected(path: String):
+	if $\"../../..\".now_talk>=0:
+		$\"../../..\".story_list[$\"../../..\".now_talk][\"background\"]=path
+	pass # Replace with function body.
 "
 
 [sub_resource type="GDScript" id="GDScript_raljn"]
@@ -340,11 +379,11 @@ func _on_menu_button_pressed(id):
 		0:
 			choose_brackground_res()
 		1:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_backgroundSize.tscn\").instantiate()
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_backgroundSize.tscn\").instantiate()
 			cd_sizeSet.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_sizeSet)
 		2:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_backgroundPos.tscn\").instantiate()
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_backgroundPos.tscn\").instantiate()
 			cd_sizeSet.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_sizeSet)
 
@@ -380,15 +419,11 @@ func _on_menu_button_pressed(id):
 	match id:
 		0:
 			#choose_brackground_res()
-			var win_roleEdit=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/win_roleEdit.tscn\").instantiate()
+			var win_roleEdit=preload(\"res://galtalk/galTalk_UI/edit_galScene/win_roleEdit.tscn\").instantiate()
 			win_roleEdit.position=Vector2(200,200)
 			get_parent().get_parent().add_child(win_roleEdit)
 		1:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_roleScale.tscn\").instantiate()
-			cd_sizeSet.position=Vector2(200,200)
-			get_parent().get_parent().add_child(cd_sizeSet)
-		2:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_rolePos.tscn\").instantiate()
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/win_roleAnime.tscn\").instantiate()
 			cd_sizeSet.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_sizeSet)
 
@@ -422,61 +457,44 @@ func _ready() -> void:
 func _on_menu_button_pressed(id):
 	match id:
 		0:
-			var cd_text=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_talkText.tscn\").instantiate()
+			var cd_text=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_talkText.tscn\").instantiate()
 			cd_text.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_text)
 		1:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_roleScale.tscn\").instantiate()
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_roleScale.tscn\").instantiate()
 			cd_sizeSet.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_sizeSet)
 		2:
-			var cd_sizeSet=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/cd_rolePos.tscn\").instantiate()
+			var cd_sizeSet=preload(\"res://galtalk/galTalk_UI/edit_galScene/cd_rolePos.tscn\").instantiate()
 			cd_sizeSet.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_sizeSet)
 "
 
-[sub_resource type="GDScript" id="GDScript_k17pp"]
-script/source = "extends Window
-
-var setting_AutoScoEnd=true
+[sub_resource type="GDScript" id="GDScript_vr2ys"]
+script/source = "extends MenuButton
 
 func _ready() -> void:
-	add_talk()
+	get_popup().connect(\"id_pressed\",  Callable(self, \"_on_menu_button_pressed\"))
 
-func chang_now_talk():
-	$\"../..\".chang_talk()
 
-func add_talk():
-	var btn=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/btn_talk.tscn\")
-	for i in range(500):
-		var a=btn.instantiate()
-		a.id=i
-		$ScrollContainer/VBoxContainer.add_child(a)
+func _on_menu_button_pressed(id):
+	match id:
+		0:
+			var cd_text=preload(\"res://galtalk/galTalk_UI/edit_galScene/win_talkList.tscn\").instantiate()
+			cd_text.position=Vector2(200,200)
+			get_parent().get_parent().add_child(cd_text)
+"
 
-func _process(delta: float) -> void:
-	if $\"../..\".story_list.size()>=500:
-		$Panel/Label.text=\"已达到单个场景的对话数上限，请去其它场景添加对话。\"
+[sub_resource type="GDScript" id="GDScript_vfw7b"]
+script/source = "extends Button
+
+func _pressed() -> void:
+	if $\"../../..\".file_path!=\"\" and $\"../../..\".file_name!=\"\" and $\"../../..\".story_list.size()>0:
+		$\"../../..\".save_galTalkScene_file()
+		var debugGals=GalTalk.creat_playSceneToFile($\"../../..\".file_path+$\"../../..\".file_name+\".json\")
+		$\"../../..\".add_child(debugGals)
 	else:
-		$Panel/Label.text=\"对话上限:\"+str($\"../..\".story_list.size())+\"/500\"
-	
-	if setting_AutoScoEnd==true:
-		$ScrollContainer.scroll_vertical=999999
-	
-	if $\"../..\".now_talk>-1 and $\"../..\".now_talk<$\"../..\".story_list.size():
-		$Panel/btn_del.visible=true
-	else:
-		$Panel/btn_del.visible=false
-
-
-func _on_cb_sco_end_toggled(toggled_on: bool) -> void:
-	setting_AutoScoEnd=toggled_on
-	pass # Replace with function body.
-
-
-func _on_btn_del_pressed() -> void:
-	get_parent().get_parent().story_list.remove_at(get_parent().get_parent().now_talk)
-	get_parent().get_parent().now_talk-=1
-	pass # Replace with function body.
+		$\"../../..\".message(\"[color=red]请在文件中至少保存过一次再运行\")
 "
 
 [node name="EditGalScene" type="Control"]
@@ -509,9 +527,9 @@ script = SubResource("GDScript_ixfk6")
 [node name="text" type="Control" parent="game"]
 anchors_preset = 0
 offset_left = 300.0
-offset_top = 450.0
+offset_top = 400.0
 offset_right = 1000.0
-offset_bottom = 700.0
+offset_bottom = 650.0
 script = SubResource("GDScript_svw3l")
 
 [node name="Panel" type="Panel" parent="game/text"]
@@ -532,6 +550,7 @@ offset_top = -50.0
 offset_right = 210.0
 offset_bottom = 10.0
 theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
 text = "角色昵称"
 
 [node name="trl_text" type="RichTextLabel" parent="game/text"]
@@ -539,6 +558,8 @@ layout_mode = 0
 offset_left = 10.0
 offset_right = 610.0
 offset_bottom = 250.0
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
 text = "请输入文本"
 
 [node name="Sprite2D" type="Sprite2D" parent="game/text"]
@@ -609,17 +630,16 @@ layout_mode = 2
 text = "scene"
 icon = ExtResource("4_raljn")
 item_count = 3
-popup/item_0/text = "input"
+popup/item_0/text = "background"
 popup/item_0/id = 0
-popup/item_1/text = "output"
+popup/item_1/text = "background size"
 popup/item_1/id = 1
-popup/item_2/text = "场景分支"
+popup/item_2/text = "background pos"
 popup/item_2/id = 2
-
-[node name="VSeparator3" type="VSeparator" parent="toolBar/FlowContainer"]
-layout_mode = 2
+script = SubResource("GDScript_8qhn5")
 
 [node name="mb_background" type="MenuButton" parent="toolBar/FlowContainer"]
+visible = false
 layout_mode = 2
 text = "background"
 icon = ExtResource("2_8i6rp")
@@ -673,25 +693,12 @@ layout_mode = 2
 layout_mode = 2
 text = "character"
 icon = ExtResource("6_b8w0n")
-item_count = 7
+item_count = 2
 popup/item_0/text = "编辑器窗口"
 popup/item_0/id = 0
-popup/item_1/text = "位置"
-popup/item_1/id = 2
-popup/item_2/text = "大小"
-popup/item_2/id = 1
-popup/item_3/text = "加入角色模式"
-popup/item_3/id = 3
-popup/item_4/text = "进入效果"
-popup/item_4/id = 4
-popup/item_5/text = "循环效果"
-popup/item_5/id = 5
-popup/item_6/text = "离开效果"
-popup/item_6/id = 6
+popup/item_1/text = "角色动画"
+popup/item_1/id = 1
 script = SubResource("GDScript_myd5j")
-
-[node name="VSeparator7" type="VSeparator" parent="toolBar/FlowContainer"]
-layout_mode = 2
 
 [node name="mb_text" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
@@ -708,53 +715,39 @@ popup/item_3/text = "文本效果"
 popup/item_3/id = 3
 script = SubResource("GDScript_qrqo1")
 
-[node name="btn_showTalkListWindow" type="Button" parent="toolBar/FlowContainer"]
-visible = false
+[node name="VSeparator7" type="VSeparator" parent="toolBar/FlowContainer/mb_text"]
 layout_mode = 2
-text = "talk list"
-icon = ExtResource("1_0afvj")
+offset_left = -8.0
+offset_right = -4.0
+offset_bottom = 40.0
 
 [node name="VSeparator8" type="VSeparator" parent="toolBar/FlowContainer"]
 layout_mode = 2
 
-[node name="MenuButton" type="MenuButton" parent="toolBar/FlowContainer"]
+[node name="mb_talk" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
 text = "talk"
 icon = ExtResource("5_ja6th")
+item_count = 1
+popup/item_0/text = "talk list"
+popup/item_0/id = 0
+script = SubResource("GDScript_vr2ys")
 
-[node name="Window" type="Window" parent="toolBar"]
-title = "talk list"
-position = Vector2i(1000, 50)
-size = Vector2i(200, 300)
-script = SubResource("GDScript_k17pp")
+[node name="VSeparator10" type="VSeparator" parent="toolBar/FlowContainer"]
+layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="toolBar/Window"]
-offset_top = 30.0
+[node name="btn_run" type="Button" parent="toolBar/FlowContainer"]
+layout_mode = 2
+text = "run"
+icon = ExtResource("12_8qhn5")
+script = SubResource("GDScript_vfw7b")
+
+[node name="message" type="Control" parent="."]
+anchors_preset = 0
 offset_right = 40.0
-offset_bottom = 70.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="toolBar/Window/ScrollContainer"]
-layout_mode = 2
-
-[node name="Panel" type="HBoxContainer" parent="toolBar/Window"]
-offset_right = 731.0
-offset_bottom = 31.0
-
-[node name="btn_del" type="Button" parent="toolBar/Window/Panel"]
-layout_mode = 2
-text = "删除"
-
-[node name="Label" type="Label" parent="toolBar/Window/Panel"]
-layout_mode = 2
-text = "上限:0/500"
-
-[node name="cb_scoEnd" type="CheckBox" parent="toolBar/Window/Panel"]
-layout_mode = 2
-button_pressed = true
-text = "自动到底"
+offset_bottom = 40.0
 
 [node name="Label" type="Label" parent="."]
-visible = false
 layout_mode = 0
 offset_left = 11.0
 offset_top = 686.0
@@ -763,7 +756,3 @@ offset_bottom = 709.0
 text = "GalTalk 0.0.1"
 
 [connection signal="about_to_popup" from="toolBar/FlowContainer/mb_background" to="toolBar/FlowContainer/mb_background" method="_on_about_to_popup"]
-[connection signal="pressed" from="toolBar/FlowContainer/btn_showTalkListWindow" to="toolBar" method="_on_btn_show_talk_list_window_pressed"]
-[connection signal="close_requested" from="toolBar/Window" to="toolBar" method="_on_window_close_requested"]
-[connection signal="pressed" from="toolBar/Window/Panel/btn_del" to="toolBar/Window" method="_on_btn_del_pressed"]
-[connection signal="toggled" from="toolBar/Window/Panel/cb_scoEnd" to="toolBar/Window" method="_on_cb_sco_end_toggled"]

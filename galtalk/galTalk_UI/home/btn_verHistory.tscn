@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3xvmwo5h5g38"]
+
+[sub_resource type="GDScript" id="GDScript_vsp3i"]
+script/source = "extends VBoxContainer
+
+var ver=\"\"
+var show=false
+var rtl_text=\"\"
+func _ready() -> void:
+	$Button.text=ver
+	$RichTextLabel.text=rtl_text
+
+
+func _on_button_pressed() -> void:
+	if show:
+		show=false
+		$RichTextLabel.visible=false
+	else:
+		show=true
+		$RichTextLabel.visible=true
+	pass # Replace with function body.
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vsp3i"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+
+[sub_resource type="Theme" id="Theme_2rl3y"]
+RichTextLabel/styles/normal = SubResource("StyleBoxFlat_vsp3i")
+
+[node name="BtnVerHistory" type="VBoxContainer"]
+offset_right = 100.0
+offset_bottom = 8.0
+script = SubResource("GDScript_vsp3i")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+custom_minimum_size = Vector2(1000, 700)
+layout_mode = 2
+theme = SubResource("Theme_2rl3y")
+bbcode_enabled = true
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

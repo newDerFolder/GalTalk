@@ -1,9 +1,215 @@
-[gd_scene load_steps=2 format=3 uid="uid://dr2ytfvqvkg2o"]
+[gd_scene load_steps=8 format=3 uid="uid://dr2ytfvqvkg2o"]
+
+[ext_resource type="Texture2D" uid="uid://enqi2gexdxjy" path="res://galtalk/galTalk_sc/ui_zungXin.png" id="1_hbs8p"]
 
 [sub_resource type="GDScript" id="GDScript_gbmx4"]
 script/source = "extends Control
+var file_path
+var file_name
+
 var story_list=[]
-var now_talk=-1
+var now_talk:int=-1
+var history_list=[]
+var now_history_id:int=-1
+
+var can_mouse_pressed:bool=true
+
+var cant_inputTime=2
+
+func system_back():
+	if now_talk>0 and now_history_id>-1:
+		now_talk=history_list[now_history_id-1]
+		now_history_id-=1
+		chang_talk()
+
+
+func get_now_talk():
+	return story_list[now_talk]
+
+func _ready() -> void:
+	$cantInputTimer.start(cant_inputTime)
+	load_galTalkScene_file(file_path)
+	now_talk=0
+	chang_talk()
+
+func chang_talk():
+	$game.chang_talk()
+	$gui.chang_talk()
+
+func _input(event: InputEvent) -> void:
+	if $cantInputTimer.time_left>0:
+		return
+	
+	if event is InputEventMouseButton and get_global_mouse_position().y<675 and can_mouse_pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			print(\"鼠标左键单击完成\")
+			if get_now_talk()[\"talk_kind\"]==\"common\":
+				next_talk()
+				chang_talk()
+
+func next_talk():
+	record_history()
+	if get_now_talk()[\"talk_goto\"]==\"next\":
+		if now_talk<story_list.size()-1:
+			now_talk+=1
+		else:
+			queue_free()
+	elif get_now_talk()[\"talk_goto\"]==\"top\":
+		now_talk=0
+	elif get_now_talk()[\"talk_goto\"]==\"end\":
+		now_talk=story_list.size()-1
+	else:
+		now_talk=int(get_now_talk()[\"talk_goto\"])
+
+func record_history():
+	if history_isHas():
+		pass
+	else:
+		history_list.append(now_talk)
+	if now_history_id<history_list.size()-1:
+		now_history_id+=1
+	#if history_isHas():
+		#now_history_id=history_getNowhisIdToTalk()
+	#else:
+		#now_history_id=history_list.size()-1
+
+func history_isHas():
+	for his_id in history_list:
+		if his_id==now_talk:
+			return true
+	return false
+func history_getNowhisIdToTalk():
+	var num=0
+	for his_id in history_list:
+		if his_id==now_talk:
+			return num
+		num+=1
+	return \"no this talk\"
+
+
+func load_galTalkScene_file(path):
+	#now_talk=-1
+	if not FileAccess.file_exists(path):
+		print(\"galTalk file model:galTalk scene file not found.\")
+		return
+	var file = FileAccess.open(path, FileAccess.READ)  # 打开文件以读取
+	var json_string = file.get_as_text()  # 读取 JSON 数据
+	file.close()  # 关闭文件
+
+	var json = JSON.new()
+	var error = json.parse(json_string)  # 解析 JSON 数据
+	if error != OK:
+		print(\"galTalk file model:Failed to parse JSON: \", error)
+		return
+	var data = json.get_data()
+	if data.has(\"story_list\"):
+		story_list = data[\"story_list\"]
+		file_name=data[\"file_name\"]
+		file_path=data[\"file_path\"]
+		if story_list.size()>0:
+			now_talk=0
+"
+
+[sub_resource type="GDScript" id="GDScript_hbs8p"]
+script/source = "extends Control
+
+func get_mainNode():
+	return get_parent()
+
+func chang_talk():
+	if $\"..\".story_list[$\"..\".now_talk].has(\"background\"):
+		$background.texture=load($\"..\".story_list[$\"..\".now_talk][\"background\"])
+	else:
+		$background.texture=load(\"res://addons/galtalk/galTalk_sc/galTalkBackground.png\")
+	if $\"..\".story_list[$\"..\".now_talk].has(\"background_sizeX\"):
+		$background.size.x=$\"..\".story_list[$\"..\".now_talk][\"background_sizeX\"]
+		$background.size.y=$\"..\".story_list[$\"..\".now_talk][\"background_sizeY\"]
+	if $\"..\".story_list[$\"..\".now_talk].has(\"background_posX\"):
+		$background.position.x=$\"..\".story_list[$\"..\".now_talk][\"background_posX\"]
+		$background.position.y=$\"..\".story_list[$\"..\".now_talk][\"background_posY\"]
+	
+	$roleGroup.chang_talk()
+	$text.chang_talk()
+"
+
+[sub_resource type="GDScript" id="GDScript_ws5h7"]
+script/source = "extends Node2D
+
+func _process(delta: float) -> void:
+	pass
+
+func add_newRole():
+	var num=0
+	for role in $\"../..\".story_list[$\"../..\".now_talk][\"roles\"]:
+		var new_role=preload(\"res://galtalk/galTalk_UI/play_galScene/play_gameRole.tscn\").instantiate()
+		new_role.id=num
+		new_role.talk_id=$\"../..\".now_talk
+		add_child(new_role)
+		new_role.upDataRole()
+		num+=1
+
+func chang_talk():
+	for role in get_children():
+		role.queue_free()
+	add_newRole()
+"
+
+[sub_resource type="GDScript" id="GDScript_87464"]
+script/source = "extends Control
+
+var is_mouse_pressed = false
+var object_name=\"text\"
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == 1:
+			is_mouse_pressed = event.pressed
+
+func _process(delta: float) -> void:
+	if Input.is_action_pressed(\"ui_text_completion_query\"):
+		$Sprite2D.visible=true
+	else:
+		$Sprite2D.visible=false
+	
+
+func chang_talk():
+	$trl_text.visible_characters=0
+	$Timer.stop()
+	$Timer.start($\"../..\".story_list[$\"../..\".now_talk][\"text_printTime\"])
+	$trl_text.clear()
+	if get_parent().get_parent().now_talk>-1 and get_parent().get_parent().now_talk<get_parent().get_parent().story_list.size():
+		visible=true
+		if $\"../..\".story_list[$\"../..\".now_talk].has(\"text_posX\"):
+			position.x=$\"../..\".story_list[$\"../..\".now_talk][\"text_posX\"]
+			position.y=$\"../..\".story_list[$\"../..\".now_talk][\"text_posY\"]
+		$rtl_name.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_role\"]
+		
+		$trl_text.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_textbox\"]
+
+	else:
+		visible=false
+
+
+func _on_timer_timeout() -> void:
+	if $trl_text.visible_characters<$\"../..\".story_list[$\"../..\".now_talk][\"text_textbox\"].length():
+		$trl_text.visible_characters+=1
+		
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_3ofsd"]
+script/source = "extends Control
+
+func chang_talk():
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_scsfh"]
+script/source = "extends HBoxContainer
+
+
+func _on_back_pressed() -> void:
+	$\"..\".system_back()
+	pass # Replace with function body.
 "
 
 [node name="PlayGalScene" type="Control"]
@@ -19,13 +225,159 @@ script = SubResource("GDScript_gbmx4")
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = SubResource("GDScript_hbs8p")
 
-[node name="TextureRect" type="TextureRect" parent="game"]
+[node name="background" type="TextureRect" parent="game"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="roleGroup" type="Node2D" parent="game"]
+script = SubResource("GDScript_ws5h7")
+
+[node name="text" type="Control" parent="game"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 300.0
+offset_top = 400.0
+offset_right = 1000.0
+offset_bottom = 650.0
+script = SubResource("GDScript_87464")
+
+[node name="Panel" type="Panel" parent="game/text"]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 250.0
+
+[node name="Panel2" type="Panel" parent="game/text"]
+layout_mode = 0
+offset_top = -50.0
+offset_right = 300.0
+offset_bottom = -5.0
+
+[node name="rtl_name" type="RichTextLabel" parent="game/text"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = -50.0
+offset_right = 210.0
+offset_bottom = 10.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "角色昵称"
+
+[node name="trl_text" type="RichTextLabel" parent="game/text"]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 610.0
+offset_bottom = 250.0
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "请输入文本"
+
+[node name="Sprite2D" type="Sprite2D" parent="game/text"]
+texture = ExtResource("1_hbs8p")
+
+[node name="Timer" type="Timer" parent="game/text"]
 
 [node name="gui" type="Control" parent="."]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = SubResource("GDScript_3ofsd")
+
+[node name="systemBar" type="HBoxContainer" parent="."]
+z_index = 4096
+custom_minimum_size = Vector2(1280, 0)
+layout_mode = 0
+offset_top = 675.0
+offset_right = 1200.0
+offset_bottom = 715.0
+alignment = 1
+script = SubResource("GDScript_scsfh")
+
+[node name="fix" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "fix"
+
+[node name="VSeparator3" type="VSeparator" parent="systemBar"]
+layout_mode = 2
+
+[node name="save" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "save"
+
+[node name="load" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "load"
+
+[node name="Qsave" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "Qsave"
+
+[node name="Qload" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "Qload"
+
+[node name="system" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "system"
+
+[node name="VSeparator2" type="VSeparator" parent="systemBar"]
+layout_mode = 2
+
+[node name="prev scene" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "prev scene"
+
+[node name="quick rollback" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "quick rollback"
+
+[node name="rollback" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "rollback"
+
+[node name="log" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "log"
+
+[node name="auto" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "auto"
+
+[node name="quick auto" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "quick auto"
+
+[node name="next scene" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "next scene"
+
+[node name="VSeparator" type="VSeparator" parent="systemBar"]
+layout_mode = 2
+
+[node name="story tree" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "story tree"
+
+[node name="volume" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "volume"
+
+[node name="replay" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "replay"
+
+[node name="start" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "favorite"
+
+[node name="hide" type="Button" parent="systemBar"]
+layout_mode = 2
+text = "hide"
+
+[node name="cantInputTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="game/text/Timer" to="game/text" method="_on_timer_timeout"]
+[connection signal="pressed" from="systemBar/rollback" to="systemBar" method="_on_back_pressed"]

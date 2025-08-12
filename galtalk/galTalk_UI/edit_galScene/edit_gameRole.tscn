@@ -4,6 +4,8 @@
 script/source = "extends Node2D
 
 var id=-1
+var talk_id=-1
+
 
 func get_mainNode():
 	return get_parent().get_parent().get_parent()
@@ -11,7 +13,7 @@ func get_roleData():
 	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][id]
 
 func upDataRole():
-	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size():
+	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size() or get_mainNode().now_talk!=talk_id:
 		queue_free()
 	else:
 		basic_upData()

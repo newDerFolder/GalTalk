@@ -60,7 +60,7 @@ placeholder_text = "请输入文件名称"
 [node name="te_filePath" type="TextEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "res://addons/galtalk/galTalk_workFile/"
+text = "res://galtalk/galTalk_workFile/"
 placeholder_text = "请输入存储路径"
 
 [node name="Label" type="Label" parent="VBoxContainer"]

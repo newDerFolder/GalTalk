@@ -72,7 +72,10 @@ func empty_role(role_id:int):
 		\"role_scaleX\":1,\"role_scaleY\":1,
 		\"role_rot\":0,\"role_visible\":true,
 		\"role_kind\":\"photo\",
-		\"photo_path\":\"\"}
+		\"photo_path\":\"\",
+		\"twAnime_start\":[],
+		\"twAnime_loop\":[],
+		\"twAnime_end\":[],}
 	return temp_role
 
 

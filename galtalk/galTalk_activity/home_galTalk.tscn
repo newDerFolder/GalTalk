@@ -1,13 +1,80 @@
-[gd_scene load_steps=2 format=3 uid="uid://6y5ksax3b7k3"]
+[gd_scene load_steps=6 format=3 uid="uid://6y5ksax3b7k3"]
 
-[sub_resource type="GDScript" id="GDScript_tmgvd"]
+[ext_resource type="Texture2D" uid="uid://bkuilgpos8bp0" path="res://galtalk/galTalk_sc/galTalkBackground.png" id="1_0156r"]
+[ext_resource type="Texture2D" uid="uid://bsdw1uopp1lqr" path="res://galtalk/galTalk_sc/bg_galtalkHomeBook.png" id="1_tkie3"]
+
+[sub_resource type="GDScript" id="GDScript_tkie3"]
 script/source = "extends Button
 
+func _pressed() -> void:
+	var galTalk_edit=preload(\"res://galtalk/galTalk_activity/edit_galScene.tscn\").instantiate()
+	$\"../../..\".get_parent().add_child(galTalk_edit)
+	$\"../../..\".queue_free()
+"
 
-func _on_pressed() -> void:
-	var a=preload(\"res://addons/galtalk/galTalk_UI/edit_galScene/ad_galTalkOverview.tscn\").instantiate()
-	add_child(a)
-	pass # Replace with function body.
+[sub_resource type="GDScript" id="GDScript_kspi6"]
+script/source = "extends Button
+
+func _ready() -> void:
+	#connect(get_popup(), self, \"_on_menu_button_pressed\")
+	connect(\"id_pressed\",  Callable(self, \"_on_menu_button_pressed\"))
+
+func _pressed() -> void:
+	choose_load_res()
+
+
+
+func choose_load_res():
+	var file_dialog = FileDialog.new()
+	add_child(file_dialog)
+	# 设置对话框的模式（例如，打开文件）
+	file_dialog.file_mode = 0
+	# 设置对话框的标题
+	file_dialog.title = \"选择文件\"
+	
+	file_dialog.current_dir = \"res://galtalk/galTalk_workFile/\"
+	# 设置允许的文件类型（可选）
+	file_dialog.filters = [\"*.json\"]
+	# 连接信号
+	file_dialog.connect(\"file_selected\", Callable(self, \"_on_file_selected\"))
+	# 显示对话框
+	file_dialog.popup_centered()
+# 回调函数：当用户选择文件时触发
+func _on_file_selected(path: String):
+	var galTalk_edit=GalTalk.creat_playSceneToFile(path)
+	$\"../../..\".get_parent().add_child(galTalk_edit)
+"
+
+[sub_resource type="GDScript" id="GDScript_vlesu"]
+script/source = "extends VBoxContainer
+
+# 预加载版本历史按钮场景并实例化添加至容器
+func _ready() -> void:
+	for version_info in verList:
+		var history_btn = preload(\"res://galtalk/galTalk_UI/home/btn_verHistory.tscn\").instantiate()
+		history_btn.ver = version_info[\"ver\"]
+		history_btn.rtl_text = version_info[\"text\"]
+		add_child(history_btn)
+
+
+# 版本历史记录
+const verList = [
+	{
+		\"ver\": \"0.0.1\",
+		\"text\": \"\"\"
+GalTalk 0.0.1 Internal Test Build
+After nearly two months of development cycle (kicked off in June 2025), the first internal test version of GalTalk is now officially released.
+Key features completed so far:
+- Basic editor UI framework setup
+- Core character module foundational functionality implementation
+GalTalk 0.0.1 内部测试版
+历经近两个月开发周期（2025年6月启动），GalTalk首个内部测试版本今日正式发布。
+当前已完成功能：
+- 基础编辑器UI框架搭建
+- 核心角色模块基础功能实现
+\"\"\"
+	}
+]
 "
 
 [node name="HomeGalTalk" type="Control"]
@@ -18,67 +85,178 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="edit" type="VBoxContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("1_tkie3")
 
-[node name="Label" type="Label" parent="edit"]
+[node name="SplitContainer" type="SplitContainer" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="edit" type="VBoxContainer" parent="SplitContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SplitContainer/edit"]
+visible = false
 layout_mode = 2
 text = "------------------------创作------------------------"
 
-[node name="newSceneAndEdit" type="Button" parent="edit"]
+[node name="Button" type="Button" parent="SplitContainer/edit"]
+layout_mode = 2
+text = "打开GalTalk场景编辑器"
+script = SubResource("GDScript_tkie3")
+
+[node name="newSceneAndEdit" type="Button" parent="SplitContainer/edit"]
+visible = false
 layout_mode = 2
 text = "新建场景并编辑"
 
-[node name="openSceneAndEdit" type="Button" parent="edit"]
+[node name="openSceneAndEdit" type="Button" parent="SplitContainer/edit"]
+visible = false
 layout_mode = 2
 text = "打开场景于场景编辑器"
 
-[node name="editStoryTree" type="Button" parent="edit"]
+[node name="editStoryTree" type="Button" parent="SplitContainer/edit"]
+visible = false
 layout_mode = 2
 text = "配置项目流程树"
 
-[node name="runScence" type="Button" parent="edit"]
+[node name="runScence" type="Button" parent="SplitContainer/edit"]
 layout_mode = 2
 text = "单独运行GalTalk场景"
+script = SubResource("GDScript_kspi6")
 
-[node name="runGalgameModel" type="Button" parent="edit"]
+[node name="runGalgameModel" type="Button" parent="SplitContainer/edit"]
 layout_mode = 2
 text = "以纯视觉小说模式运行"
 
-[node name="projectSeeting" type="Button" parent="edit"]
+[node name="projectSeeting" type="Button" parent="SplitContainer/edit"]
 layout_mode = 2
 text = "项目设置"
 
-[node name="galtalkSetting" type="Button" parent="edit"]
+[node name="galtalkSetting" type="Button" parent="SplitContainer/edit"]
 layout_mode = 2
 text = "GalTalk设定"
 
-[node name="about" type="Button" parent="edit"]
+[node name="other" type="TabContainer" parent="SplitContainer"]
 layout_mode = 2
-text = "关于GalTalk"
-script = SubResource("GDScript_tmgvd")
+current_tab = 3
 
-[node name="Label2" type="Label" parent="edit"]
+[node name="文化" type="VBoxContainer" parent="SplitContainer/other"]
+visible = false
 layout_mode = 2
-text = "------------------------学习------------------------"
+metadata/_tab_index = 0
 
-[node name="Button8" type="Button" parent="edit"]
+[node name="Label" type="Label" parent="SplitContainer/other/文化"]
 layout_mode = 2
-text = "GalTalk内置文档"
+text = "推荐项"
+horizontal_alignment = 1
 
-[node name="Button9" type="Button" parent="edit"]
+[node name="RichTextLabel" type="RichTextLabel" parent="SplitContainer/other/文化"]
+custom_minimum_size = Vector2(0, 600)
 layout_mode = 2
-text = "查看示例工程"
+text = "当文字长出画面：一场跨越四十年的「互动叙事」浪漫史
 
-[node name="Button10" type="Button" parent="edit"]
+ 深夜的书房里，你点击鼠标翻开第37页。屏幕上的雨丝模糊了窗玻璃，穿水手服的少女正踮脚去够书架顶层的精装本，发梢滴落的水珠在木纹上晕开浅蓝——这不是某本轻小说的插图，而是你正在玩的视觉小说（Visual Novel，简称VN）中最普通的场景。当「文字+图像+选择支」的组合成为你与另一个世界的接口，或许该回溯这场始于纸页、兴于像素、盛于交互的浪漫旅程：那些在代码与画笔间生长的故事，如何从一张「选择卡片」，演变成能让人落泪、欢笑、彻夜难眠的数字诗学？
+ 
+ ---
+ 
+前史：当「选择」成为故事的主人
+
+ 视觉小说的基因里，藏着人类最古老的叙事冲动——「如果我是主角，会怎么做？」  
+
+ 1979年，美国出版社Bantam Books推出了一套改变游戏史的书：《选择你自己的冒险》（Choose Your Own Adventure）。封面是太空探险、恐龙世界或中世纪城堡，内页用编号段落推进剧情，每到关键节点，读者要在「翻到第47页」或「翻到第89页」的选择中决定主角生死。这套书全球销量超2.5亿册，孩子们在卧室台灯下反复推演「如果选另一条路会不会活下来」，大人们惊叹「原来故事可以不是单向流动的」。  
+
+ 但真正让「互动叙事」扎根的，是日本。1980年代初，个人电脑在日本家庭逐渐普及，程序员们开始思考：「能不能把书里的选择做成电子版本？」1981年，日本光荣特库摩（Koei）推出《The Portopia Serial Murder Case》（《港口镇连续杀人事件》），玩家通过键盘输入指令调查案件，电脑会根据选择推进分支剧情——这被视为日本「文字冒险游戏」（Text Adventure）的开山作。不过此时的画面还停留在8x8像素的字符画，故事更接近「电子版侦探小说」。  
+
+ 直到1983年，日本游戏杂志《Famicom通信》提出一个新概念：「ビジュアルノベル」（Visual Novel，视觉小说）。这个词汇的诞生，标志着一种全新形态的诞生：文字不再是唯一核心，图像、音乐与文本共同编织沉浸感。早期代表作是1985年ELF社的《梦幻战士》（Dreams of Desire），虽然它更常被归为「美少女游戏」，但已具备视觉小说的关键特征：固定视角的角色立绘、配合剧情切换的背景图、以及「你的选择影响结局」的互动机制。  
+ 
+黄金时代：当文字学会「呼吸」
+
+ 90年代的日本，经济泡沫逐渐消散，宅文化却迎来爆发式增长。视觉小说在这十年完成了从「实验性玩具」到「文化符号」的蜕变，关键推手是两批创作者：一批用「多线叙事」拓展故事的深度，另一批则用「情感共鸣」叩击人心。  
+
+ 1992年，CHUNSOFT推出《弟切草》（Tsukihime？不，正确应为《弟切草》），这款被后世称为「视觉小说教科书」的作品，首次将「电影化叙事」引入游戏：阴郁的森林、斑驳的老宅、角色微颤的眼睫，配合压抑的电子音效，玩家仿佛在玩一部「会选择的互动电影」。更革命性的是它的「碎片化叙事」——玩家需要在多个章节间拼凑线索，像侦探般还原隐藏的真相。这种「解谜+情感」的混合模式，成了后来《命运石之门》《白色相簿2》的精神原型。  
+
+ 真正让视觉小说破圈的，是1999年Key社的《Kanon》。当时的日本游戏市场被「战斗RPG」和「成人向GALGAME」主导，但《Kanon》用「纯爱」撕开了一道裂缝：雪地里的初遇、教堂前的钢琴声、樱花树下的约定，这些场景被细腻的分镜与钢琴BGM放大成「治愈系美学」。更关键的是，它打破了「主角必须拯救世界」的套路——故事聚焦于普通人在青春里的迷茫与成长，让玩家第一次意识到：视觉小说的力量，不在宏大的世界观，而在「某个瞬间的真实感」。  
+
+ 同期的《同级生》《To Heart》则拓展了视觉小说的边界。《同级生》首次将「恋爱模拟」与「视觉小说」结合，玩家需要在校园地图中穿梭，与不同角色建立好感度；《To Heart》则以「日常校园」为舞台，用「萌元素」（如会说话的兔子玩偶、天然呆的转学生）构建出「近未来的青春图鉴」。这些作品证明：视觉小说可以是悬疑的、治愈的、纯爱的，甚至是「无厘头」的——它的容器足够包容，能装下人类所有的情感光谱。  
+ 
+后视觉小说时代：从「游戏」到「媒介」
+
+ 2000年后，互联网与移动设备的普及，让视觉小说的发展进入「裂变期」。一方面，技术的进步让画面从「静态立绘」进化为「动态Live2D」「3D场景」，语音合成技术让角色对话更自然（比如《白色相簿2》的雪菜线，玩家甚至能听到呼吸声的细节）；另一方面，「全年龄化」与「成人向」的分化愈发明显——Key社坚持「纯爱不卖肉」，《尼尔：机械纪元》的衍生视觉小说探索哲学命题，而另一部分作品则更强调感官体验，形成多元共生的生态。  
+
+ 更值得注意的是「跨媒介融合」。2011年，《命运石之门》从游戏改编为动画、漫画、小说，全球播放量破亿；2017年，《去月球》（To The Moon）作为独立游戏爆火，其「记忆回溯」的叙事手法被电影《暖暖内含光》致敬；2020年，《艾迪芬奇的记忆》（What Remains of Edith Finch）用视觉小说结构讲述家族秘辛，获得TGA「最佳叙事奖」——这些作品证明：视觉小说早已超越「游戏类型」的范畴，成为一种「互动叙事媒介」，其核心是「让玩家成为故事的共建者」。  
+
+ 在中国，视觉小说的发展同样精彩。2008年，「汉化组」的出现让日本视觉小说进入中文世界，《CLANNAD》《寒蝉鸣泣之时》成为一代人的青春记忆；2015年，国产独立游戏《去月球》中文版发布，本土创作者开始探索「中国故事」——比如《葬花·暗黑桃花源》将聊斋元素与赛博朋克结合，《三色绘恋》用校园恋爱讲述代际沟通，这些作品证明：视觉小说的根可以扎在任何文化的土壤里。  
+ 
+
+ 站在2025年的今天回望，视觉小说的历史像一本被不断续写的书：从美国的选择卡片，到日本的像素文字，再到今天的全媒体叙事，它始终在做一件事——让「阅读」变成「参与」，让「故事」变成「经历」。  
+
+ 或许未来的视觉小说会有更酷的形态：脑机接口让选择更「本能」，AI生成让剧情无限分支，元宇宙让它成为可触摸的虚拟剧场。但不变的是，当你在深夜点击「下一章」时，屏幕那端的故事依然在等待——等待与你的心跳同频，等待在你的选择里，活成独一无二的模样。  
+
+ 这，就是视觉小说的浪漫：它从不是「被讲述的故事」，而是「正在发生的相遇」。"
+
+[node name="study" type="VBoxContainer" parent="SplitContainer/other"]
+visible = false
 layout_mode = 2
-text = "前往查看biliibili教程系列视频"
+metadata/_tab_index = 1
 
-[node name="other" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="TextureRect" type="TextureRect" parent="SplitContainer/other/study"]
+layout_mode = 2
+texture = ExtResource("1_0156r")
+expand_mode = 5
 
-[connection signal="pressed" from="edit/about" to="edit/about" method="_on_pressed"]
+[node name="Button" type="Button" parent="SplitContainer/other/study"]
+layout_mode = 2
+text = "GalTalk Art"
+
+[node name="开发者" type="RichTextLabel" parent="SplitContainer/other"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="SplitContainer/other/开发者"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "GalTalk is a visual novel creation tool based on Godot. It allows you to create scenes and dialogues through visual editing and then compose them into a complete visual novel using the flowchart functionality. GalTalk also comes with features such as a save system, customizable UI, and various styles. If you are proficient in Godot programming, you can even integrate GalTalk into other types of game development to narrate stories, allowing your creations to extend beyond the realm of visual novels.
+When using GalTalk, you must declare its use in your work, including the splash screen and the credits section.
+Developer: Happy der someone (New Folder) (newDerFolder). Feel free to visit my social media profile.
+
+
+你好我是GalTalk的开发者newDerFoler，可前往GitHub看，当然也欢迎各位参与GalTalk的社区活动，反馈问题或分享您的作品亦或者是参与GalTalk的开发。
+GalTalk 是一个基于 Godot 的视觉小说制作工具，可通过可视化编辑制作场景和对话，再通过流程树功能将场景们组成一个完整的视觉小说。并且 GalTalk 自带存档系统、自定义 UI 功能以及多种风格等功能。如果你会 Godot 编程，甚至可以在其他类型的游戏开发中调用 GalTalk 来叙述剧情，让你的作品不仅仅局限于视觉小说。
+使用 GalTalk 时，需要在作品中声明使用了 GalTalk，包括启动界面和关于鸣谢部分。
+开发者：快乐的某人（新建文件夹）（newDerFolder）。欢迎访问我的社交平台主页。
+
+GalTalkはGodotをベースにしたビジュアルノベル制作ツールで、ビジュアルエディターでシーンや会話を制作し、フローチャート機能でそれらのシーンを組み合わせることで、完成したビジュアルノベルを作成することができます。さらに、GalTalkにはセーブシステムやカスタマイズ可能なUI、スタイルなども搭載されています。Godotプログラミングが得意であれば、GalTalkを他のタイプのゲーム開発に組み込んでストーリーを叙述することも可能で、作品をビジュアルノベルに限定する必要がありません。
+GalTalkを使用する場合は、作品内（起動画面やクレジットなど）にGalTalkの使用を明記する必要があります。
+開発者：Happy der someone（New Folder）（newDerFolder）。私のソーシャルメディアのプロフィールを訪れてください。
+
+GalTalk은 Godot 기반의 비주얼 노벨 제작 도구로, 시각화 편집기를 통해 장면과 대화를 만들고, 플로우 트리 기능을 사용하여 그 장면들을 하나의 완성된 비주얼 노벨로 구성할 수 있습니다. 또한 GalTalk은 저장 시스템, 사용자 정의 UI 기능, 스타일 등이 내장되어 있습니다. Godot 프로그래밍에 능숙하다면, GalTalk을 다른 유형의 게임 개발에 호출하여 스토리를 전개할 수도 있어, 작품을 비주얼 노벨에만 제한할 필요가 없습니다.
+GalTalk을 사용할 때는 작품 내에서 (시작 화면, 감사의 말 등) GalTalk의 사용을 반드시 표시해야 합니다.
+개발자: 행복한 der someone (새 폴더) (newDerFolder). 제 소셜 미디어 프로필을 방문해 주세요.
+
+GalTalk — это инструмент для создания визуальных романов на базе Godot. С его помощью вы можете создавать сцены и диалоги с помощью визуального редактора, а затем собирать их в完整的视觉小说通过流程树功能。Кроме того，GalTalk имеет встроенные функции，如 сохранение игры，настройка пользовательского интерфейса и различные стили. Если вы знаете программирование на Godot，то можете использовать GalTalk даже в разработке других типов игр для повествования историй，позволяя вашим работам не ограничиваться только визуальными романами.
+При использовании GalTalk необходимо указать на использование этого инструмента в своем произведении, включая экран загрузки и раздел благодарностей.
+Разработчик: Счастливый кто-то (Создать новую папку) (newDerFolder). Заходите на мою страницу в социальной сети.
+
+GalTalk 是一個基於 Godot 的視覺小說製作工具，可透過視覺化編輯製作場景和對話，再透過流程樹功能將場景們組成一個完整的視覺小說。並且 GalTalk 自帶存檔系統、自定義 UI 功能以及多種風格等功能。如果你會 Godot 程式設計，甚至可以在其他類型的遊戲開發中調用 GalTalk 來敘述劇情，讓你的作品不僅僅局限於視覺小說。
+使用 GalTalk 時，需要在作品中聲明使用了 GalTalk，包括啟動界面和關於鳴謝部分。
+開發者：快樂的某人（新建文件夾）（newDerFolder）。歡迎參觀我的社交平台主頁。"
+
+[node name="ver" type="ScrollContainer" parent="SplitContainer/other"]
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SplitContainer/other/ver"]
+layout_mode = 2
+alignment = 1
+script = SubResource("GDScript_vlesu")

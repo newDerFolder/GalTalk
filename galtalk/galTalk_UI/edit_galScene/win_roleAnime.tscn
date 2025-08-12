@@ -1,0 +1,160 @@
+[gd_scene load_steps=8 format=3 uid="uid://brhnw14cr4i1g"]
+
+[sub_resource type="GDScript" id="GDScript_kvll4"]
+script/source = "extends ConfirmationDialog
+"
+
+[sub_resource type="GDScript" id="GDScript_plxei"]
+script/source = "extends VBoxContainer
+var now_role_id=-1
+
+func _ready() -> void:
+	#print(get_mainNode())
+	pass
+
+func chang():
+	$startAnime.change()
+
+func get_now_role():
+	return get_mainNode().story_list[get_now_talk()][\"roles\"][now_role_id]
+func get_now_talk():
+	return get_mainNode().now_talk
+func get_mainNode():
+	return get_parent().get_parent().get_parent().get_parent()
+func get_emptyAnimeTw():
+	return {
+		\"tw_property\":\"position\",
+		\"val_common\":0,
+		\"val_path\":\"\",
+		\"val_x\":0,
+		\"val_y\":0,
+		\"startTime\":0,
+		\"keepTime\":1,
+	}
+func add_newAnimeToGroup(group_name):
+	get_now_role()[group_name].append(get_emptyAnimeTw())
+"
+
+[sub_resource type="GDScript" id="GDScript_3o32n"]
+script/source = "extends HBoxContainer
+
+func _ready() -> void:
+	$OptionButton.clear()
+	var cs=0
+	for i in get_mainNode().story_list[get_now_talk()][\"roles\"]:
+		$OptionButton.add_item(i[\"role_name\"],cs)
+	$OptionButton.select(-1)
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent().get_parent().get_parent()
+func get_now_talk():
+	return get_mainNode().now_talk
+
+func _on_option_button_item_selected(index: int) -> void:
+	$\"..\".now_role_id=index
+	$\"..\".chang()
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_doq2w"]
+script/source = "extends VBoxContainer
+
+var group_name=\"twAnime_start\"
+
+
+func change():
+	var passNum=0
+	for i in get_children():
+		if passNum<2:
+			passNum+=1
+		else:
+			i.queue_free()
+	var num=0
+	for i in $\"..\".get_now_role()[\"twAnime_start\"]:
+		var twp=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_roleAnime.tscn\").instantiate()
+		twp.id=num
+		add_child(twp)
+		twp.change()
+		num+=1
+"
+
+[sub_resource type="GDScript" id="GDScript_knpyv"]
+script/source = "extends Button
+
+func _pressed() -> void:
+	$\"../..\".add_newAnimeToGroup(get_parent().group_name)
+	var twp=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_roleAnime.tscn\").instantiate()
+	twp.id=get_parent().get_children().size()-2
+	get_parent().add_child(twp)
+"
+
+[sub_resource type="GDScript" id="GDScript_uu2uk"]
+script/source = "extends VBoxContainer
+
+var group_name=\"twAnime_loop\"
+"
+
+[sub_resource type="GDScript" id="GDScript_aixfh"]
+script/source = "extends VBoxContainer
+
+var group_name=\"twAnime_end\"
+"
+
+[node name="WinRoleAnime" type="ConfirmationDialog"]
+title = "角色动画编辑窗口"
+initial_position = 2
+size = Vector2i(1100, 600)
+visible = true
+script = SubResource("GDScript_kvll4")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 1092.0
+offset_bottom = 551.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+script = SubResource("GDScript_plxei")
+
+[node name="chooseRole" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_3o32n")
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/chooseRole"]
+layout_mode = 2
+text = "edit role:"
+
+[node name="OptionButton" type="OptionButton" parent="ScrollContainer/VBoxContainer/chooseRole"]
+layout_mode = 2
+
+[node name="startAnime" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_doq2w")
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/startAnime"]
+layout_mode = 2
+text = "start anime:"
+
+[node name="Button" type="Button" parent="ScrollContainer/VBoxContainer/startAnime"]
+layout_mode = 2
+text = "add new TwAnime"
+script = SubResource("GDScript_knpyv")
+
+[node name="loopAnime" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_uu2uk")
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/loopAnime"]
+layout_mode = 2
+text = "loop anime:"
+
+[node name="endStart" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_aixfh")
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/endStart"]
+layout_mode = 2
+text = "end anime:"
+
+[connection signal="item_selected" from="ScrollContainer/VBoxContainer/chooseRole/OptionButton" to="ScrollContainer/VBoxContainer/chooseRole" method="_on_option_button_item_selected"]

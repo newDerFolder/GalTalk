@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3c5kynht6y5y"
-path="res://.godot/imported/icon_galTalk.png-8adf98a6cff62c7ae29e3a5a43313992.ctex"
+uid="uid://chy6nbr8oyq1p"
+path="res://.godot/imported/icon_writer.png-5933fa62ddfe598a4c61da0a4110c832.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://galtalk/galTalk_sc/icon_galTalk.png"
-dest_files=["res://.godot/imported/icon_galTalk.png-8adf98a6cff62c7ae29e3a5a43313992.ctex"]
+source_file="res://galtalk/galTalk_sc/icon_writer.png"
+dest_files=["res://.godot/imported/icon_writer.png-5933fa62ddfe598a4c61da0a4110c832.ctex"]
 
 [params]
 

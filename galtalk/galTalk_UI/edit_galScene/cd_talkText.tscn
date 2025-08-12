@@ -8,8 +8,8 @@ func _ready() -> void:
 		$VBoxContainer/te_name.text=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_role\"]
 	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"text_textbox\"):
 		$VBoxContainer/te_text.text=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_textbox\"]
-	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"text_speed\"):
-		$VBoxContainer/SpinBox.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_speed\"]
+	if get_parent().get_parent().story_list[get_parent().get_parent().now_talk].has(\"text_printTime\"):
+		$VBoxContainer/SpinBox.value=get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_printTime\"]
 
 func _on_canceled() -> void:
 	queue_free()
@@ -20,7 +20,8 @@ func _on_canceled() -> void:
 func _on_confirmed() -> void:
 	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_role\"]=$VBoxContainer/te_name.text
 	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_textbox\"]=$VBoxContainer/te_text.text
-	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_speed\"]=$VBoxContainer/SpinBox.value
+	get_parent().get_parent().story_list[get_parent().get_parent().now_talk][\"text_printTime\"]=$VBoxContainer/SpinBox.value
+	get_parent().get_parent().chang_talk()
 	queue_free()
 	pass # Replace with function body.
 "

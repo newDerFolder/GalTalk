@@ -1,6 +1,4 @@
-@tool
-extends EditorPlugin
-
+class_name GalTalk
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
@@ -10,3 +8,20 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
 	pass
+
+
+static func creat_emptyPlayScene():
+	var galScene=preload("res://galtalk/galTalk_activity/play_galScene.tscn").instantiate()
+	return galScene
+static func creat_playSceneToFile(file_path:String):
+	var galScene=preload("res://galtalk/galTalk_activity/play_galScene.tscn").instantiate()
+	galScene.file_path=file_path
+	return galScene
+
+static func creat_galTalkHome():
+	var galScene=preload("res://galtalk/galTalk_activity/home_galTalk.tscn").instantiate()
+	return galScene
+
+static func creat_galTalkEditor():
+	var galScene=preload("res://galtalk/galTalk_activity/edit_galScene.tscn").instantiate()
+	return galScene

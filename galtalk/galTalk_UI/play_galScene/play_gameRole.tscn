@@ -1,0 +1,84 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg36vfi4vltr"]
+
+[sub_resource type="GDScript" id="GDScript_yv8oi"]
+script/source = "extends Node2D
+
+var id=-1
+var talk_id=-1
+var twTime=0
+var twAnime_start=[]
+var read_twGroup
+
+func _ready() -> void:
+	twAnime_start=get_roleData()[\"twAnime_start\"].duplicate()
+	$Timer.start(0.05)
+
+func _process(delta: float) -> void:
+	if twAnime_start.size()>0:
+		read_twGroup=\"start\"
+		var num=0
+		for i in twAnime_start:
+			new_tw(i,num)
+			num+=1
+		return
+
+func new_tw(data:Dictionary,num):
+	if data[\"startTime\"]>twTime:
+		return
+	elif data[\"tw_property\"]==\"position\":
+		var tw=get_tree().create_tween()
+		tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
+		del_tw(num)
+	elif data[\"tw_property\"]==\"scale\":
+		var tw=get_tree().create_tween()
+		tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
+		del_tw(num)
+	elif data[\"tw_property\"]==\"texture\":
+		var tw=get_tree().create_tween()
+		tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"])
+		del_tw(num)
+
+func del_tw(id):
+	if read_twGroup==\"start\":
+		twAnime_start.remove_at(id)
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent()
+func get_roleData():
+	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][id]
+
+func upDataRole():
+	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size() or get_mainNode().now_talk!=talk_id:
+		queue_free()
+	else:
+		basic_upData()
+		kind_upData()
+
+func basic_upData():
+	position=Vector2(get_roleData()[\"role_posX\"],get_roleData()[\"role_posY\"])
+	scale=Vector2(get_roleData()[\"role_scaleX\"],get_roleData()[\"role_scaleY\"])
+	rotation_degrees=get_roleData()[\"role_rot\"]
+	visible=get_roleData()[\"role_visible\"]
+
+
+func kind_upData():
+	if get_roleData()[\"role_kind\"]==\"photo\":
+			$image/photo.texture=load(get_roleData()[\"photo_path\"])
+
+
+func _on_timer_timeout() -> void:
+	twTime+=0.05
+	pass # Replace with function body.
+"
+
+[node name="PlayGameRole" type="Node2D"]
+script = SubResource("GDScript_yv8oi")
+
+[node name="image" type="Node2D" parent="."]
+
+[node name="photo" type="Sprite2D" parent="image"]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

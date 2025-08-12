@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byl8ltidqrmvp"
-path="res://.godot/imported/role_folder_body.png-b14c459b52044880f6dc46a990a32477.ctex"
+path="res://.godot/imported/role_folder_body.png-b66575ddb92684e0688aed43ac0d92af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/galtalk/galTalk_sc/role_folder_body.png"
-dest_files=["res://.godot/imported/role_folder_body.png-b14c459b52044880f6dc46a990a32477.ctex"]
+source_file="res://galtalk/galTalk_sc/role_folder_body.png"
+dest_files=["res://.godot/imported/role_folder_body.png-b66575ddb92684e0688aed43ac0d92af.ctex"]
 
 [params]
 

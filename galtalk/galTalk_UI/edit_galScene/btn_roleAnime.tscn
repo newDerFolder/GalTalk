@@ -1,0 +1,227 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcul63fyxcd5"]
+
+[sub_resource type="GDScript" id="GDScript_5nh4x"]
+script/source = "extends Panel
+
+var id
+
+func change():
+	$VBoxContainer/HBoxContainer.change()
+
+func _ready() -> void:
+	$VBoxContainer/HBoxContainer.id=id
+"
+
+[sub_resource type="GDScript" id="GDScript_uryjb"]
+script/source = "extends HBoxContainer
+
+var id=-1
+
+
+func _ready() -> void:
+	pass
+func _process(delta: float) -> void:
+	if $OptionButton.selected==0 or $OptionButton.selected==1:
+		$varX.visible=true
+		$varY.visible=true
+	else:
+		$varX.visible=false
+		$varY.visible=false
+	if $OptionButton.selected==3:
+		$btn_valPath.visible=true
+		$val_path.visible=true
+	else:
+		$btn_valPath.visible=false
+		$val_path.visible=false
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent().get_parent().get_mainNode()
+func get_groupName():
+	return get_parent().get_parent().get_parent().group_name
+func get_roleId():
+	return get_parent().get_parent().get_parent().get_parent().now_role_id
+func get_AnimeList():
+	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][get_roleId()][get_groupName()]
+
+func upData(property,new_val):
+	get_AnimeList()[id][property]=new_val
+
+func change():
+	var newp=-1
+	match get_AnimeList()[id][\"tw_property\"]:
+		\"position\":
+			newp=0
+		\"scale\":
+			newp=1
+		\"rotation_degrees\":
+			newp=2
+		\"texture\":
+			newp=3
+	$OptionButton.select(newp)
+	
+	$startTime.value=get_AnimeList()[id][\"startTime\"]
+	$keepTime.value=get_AnimeList()[id][\"keepTime\"]
+	$varX.value=get_AnimeList()[id][\"val_x\"]
+	$varY.value=get_AnimeList()[id][\"val_y\"]
+	$val_path.text=get_AnimeList()[id][\"val_path\"]
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	var newp
+	match index:
+		0:
+			newp=\"position\"
+		1:
+			newp=\"scale\"
+		2:
+			newp=\"rotation_degrees\"
+		3:
+			newp=\"texture\"
+	upData(\"tw_property\",newp)
+	pass # Replace with function body.
+func _on_start_time_value_changed(value: float) -> void:
+	upData(\"startTime\",value)
+	pass # Replace with function body.
+func _on_keep_time_value_changed(value: float) -> void:
+	upData(\"keepTime\",value)
+	pass # Replace with function body.
+func _on_var_x_value_changed(value: float) -> void:
+	upData(\"val_x\",value)
+	pass # Replace with function body.
+func _on_var_y_value_changed(value: float) -> void:
+	upData(\"val_y\",value)
+	pass # Replace with function body.
+func _on_val_path_text_changed(new_text: String) -> void:
+	upData(\"val_path\",new_text)
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_v5t11"]
+script/source = "extends Button
+
+@onready var HB=$\"..\"
+
+func _ready() -> void:
+	pass
+
+
+
+func _pressed() -> void:
+	choose_brackground_res()
+
+
+func choose_brackground_res():
+	var file_dialog = FileDialog.new()
+	add_child(file_dialog)
+	# 设置对话框的模式（例如，打开文件）
+	file_dialog.file_mode = 0
+	# 设置对话框的标题
+	file_dialog.title = \"选择文件\"
+	# 设置允许的文件类型（可选）
+	file_dialog.filters = [\"*.bmp\", \"*.png\", \"*.jpg\", \"*.jpeg\", \"*.dds\", \"*.ktx\", \"*.exr\", \"*.hdr\", \"*.tga\", \"*.svg\", \"*.webp\"]
+	# 连接信号
+	file_dialog.connect(\"file_selected\", Callable(self, \"_on_file_selected\"))
+	# 显示对话框
+	file_dialog.popup_centered()
+# 回调函数：当用户选择文件时触发
+func _on_file_selected(path: String):
+	$\"../val_path\".text=path
+	HB._on_val_path_text_changed(path)
+"
+
+[node name="BtnRoleAnime" type="Panel"]
+custom_minimum_size = Vector2(1000, 75)
+offset_right = 600.0
+offset_bottom = 75.0
+script = SubResource("GDScript_5nh4x")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_uryjb")
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "属性:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+item_count = 5
+popup/item_0/text = "坐标"
+popup/item_0/id = 0
+popup/item_1/text = "尺寸"
+popup/item_1/id = 1
+popup/item_2/text = "角度"
+popup/item_2/id = 2
+popup/item_3/text = "图片"
+popup/item_3/id = 3
+popup/item_4/text = "透明度"
+popup/item_4/id = 4
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "开始于:"
+
+[node name="startTime" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+step = 0.001
+suffix = "s"
+
+[node name="Label3" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "时长:"
+
+[node name="keepTime" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+step = 0.001
+suffix = "s"
+
+[node name="Label4" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "值:"
+
+[node name="varX" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -99999.0
+max_value = 99999.0
+step = 0.001
+prefix = "x="
+
+[node name="varY" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -99999.0
+max_value = 99999.0
+step = 0.001
+prefix = "y="
+
+[node name="val_path" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+placeholder_text = "请输入或选择资源"
+
+[node name="btn_valPath" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "choose"
+script = SubResource("GDScript_v5t11")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "相对于原属性"
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "删除该动画"
+
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer/OptionButton" to="VBoxContainer/HBoxContainer" method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/startTime" to="VBoxContainer/HBoxContainer" method="_on_start_time_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/keepTime" to="VBoxContainer/HBoxContainer" method="_on_keep_time_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/varX" to="VBoxContainer/HBoxContainer" method="_on_var_x_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/varY" to="VBoxContainer/HBoxContainer" method="_on_var_y_value_changed"]
+[connection signal="text_changed" from="VBoxContainer/HBoxContainer/val_path" to="VBoxContainer/HBoxContainer" method="_on_val_path_text_changed"]
