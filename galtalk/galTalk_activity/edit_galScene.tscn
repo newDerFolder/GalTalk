@@ -22,12 +22,9 @@ var file_path:String=\"\"
 var file_name:String=\"\"
 
 
+
 func message(messageText):
-	var mes=preload(\"res://galtalk/galTalk_UI/message/rtlBoxMessage.tscn\").instantiate()
-	mes.position=Vector2(300,300)
-	mes.scale=Vector2(2,2)
-	mes.text=messageText
-	$message.add_child(mes)
+	$message.add_child(GalTalk.message(messageText))
 
 
 func chang_talk():
@@ -89,6 +86,8 @@ func empty_talk():
 	var temp_talk={
 		\"talk_kind\":\"common\",
 		\"talk_goto\":\"next\",
+		\"talk_nextRes\":\"\",
+		\"talk_chooseList\":[],
 		\"background\":\"res://galtalk/galTalk_sc/galTalkBackground.png\",
 		#\"background_sizeX\":1280,
 		#\"background_sizeY\":720,
@@ -97,7 +96,7 @@ func empty_talk():
 		\"roles\":[],
 		\"text_role\":\"无名氏\",
 		\"text_textbox\":\"请输入内容\",
-		\"text_printTime\":0.001,
+		\"text_printTime\":0.1,
 		}
 	return temp_talk
 
@@ -483,6 +482,10 @@ func _on_menu_button_pressed(id):
 			var cd_text=preload(\"res://galtalk/galTalk_UI/edit_galScene/win_talkList.tscn\").instantiate()
 			cd_text.position=Vector2(200,200)
 			get_parent().get_parent().add_child(cd_text)
+		1:
+			var cd_text=preload(\"res://galtalk/galTalk_UI/edit_galScene/win_talkNext.tscn\").instantiate()
+			cd_text.position=Vector2(200,200)
+			get_parent().get_parent().add_child(cd_text)
 "
 
 [sub_resource type="GDScript" id="GDScript_vfw7b"]
@@ -728,9 +731,11 @@ layout_mode = 2
 layout_mode = 2
 text = "talk"
 icon = ExtResource("5_ja6th")
-item_count = 1
+item_count = 2
 popup/item_0/text = "talk list"
 popup/item_0/id = 0
+popup/item_1/text = "talk next"
+popup/item_1/id = 1
 script = SubResource("GDScript_vr2ys")
 
 [node name="VSeparator10" type="VSeparator" parent="toolBar/FlowContainer"]
@@ -753,6 +758,6 @@ offset_left = 11.0
 offset_top = 686.0
 offset_right = 109.0
 offset_bottom = 709.0
-text = "GalTalk 0.0.1"
+text = "GalTalk testVer"
 
 [connection signal="about_to_popup" from="toolBar/FlowContainer/mb_background" to="toolBar/FlowContainer/mb_background" method="_on_about_to_popup"]

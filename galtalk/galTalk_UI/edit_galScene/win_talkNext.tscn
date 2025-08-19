@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3 uid="uid://crldw7xis615n"]
+
+[sub_resource type="GDScript" id="GDScript_x0xq7"]
+script/source = "extends VBoxContainer
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent()
+func get_nowStroy():
+	return get_mainNode().story_list[get_mainNode().now_talk]
+
+func _ready() -> void:
+	$info/Label2.text=\"id \"+str(get_mainNode().now_talk)+\" \"+get_mainNode().story_list[get_mainNode().now_talk][\"text_role\"]+\":\"+get_mainNode().story_list[get_mainNode().now_talk][\"text_textbox\"]
+	var tempStr=get_nowStroy()[\"talk_goto\"]
+	var tempId
+	match tempStr:
+		\"next\":
+			tempId=0
+		\"finish\":
+			tempId=1
+		\"nextSence\":
+			tempId=2
+		\"var\":
+			tempId=3
+		\"script\":
+			tempId=4
+		\"choose\":
+			tempId=5
+		\"jumpId\":
+			tempId=6
+	$gotoKind/gotoKInd.select(tempId)
+
+
+func _on_goto_k_ind_item_selected(index: int) -> void:
+	var tempStr
+	match index:
+		0:
+			tempStr=\"next\"
+		1:
+			tempStr=\"finish\"
+		2:
+			tempStr=\"nextSence\"
+		3:
+			tempStr=\"var\"
+		4:
+			tempStr=\"script\"
+		5:
+			tempStr=\"choose\"
+		6:
+			tempStr=\"jumpId\"
+	get_nowStroy()[\"talk_goto\"]=tempStr
+
+
+func _on_id_num_value_changed(value: float) -> void:
+	get_nowStroy()[\"talk_nextRes\"]=int(value)
+	pass # Replace with function body.
+"
+
+[node name="WinTalkNext" type="AcceptDialog"]
+title = "talk next"
+initial_position = 2
+size = Vector2i(400, 400)
+visible = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 351.0
+script = SubResource("GDScript_x0xq7")
+
+[node name="info" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/info"]
+layout_mode = 2
+text = "now talk:"
+
+[node name="Label2" type="Label" parent="VBoxContainer/info"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2

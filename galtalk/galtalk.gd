@@ -8,7 +8,12 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
 	pass
-
+static func message(messageText:String):
+	var mes=preload("res://galtalk/galTalk_UI/message/rtlBoxMessage.tscn").instantiate()
+	mes.Lposition=Vector2(300,300)
+	mes.Lscale=Vector2(1,1)
+	mes.Ltext=messageText
+	return mes
 
 static func creat_emptyPlayScene():
 	var galScene=preload("res://galtalk/galTalk_activity/play_galScene.tscn").instantiate()

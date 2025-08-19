@@ -46,6 +46,10 @@ func get_AnimeList():
 func upData(property,new_val):
 	get_AnimeList()[id][property]=new_val
 
+func del():
+	get_AnimeList().remove_at(id)
+	$\"../..\".queue_free()
+
 func change():
 	var newp=-1
 	match get_AnimeList()[id][\"tw_property\"]:
@@ -93,6 +97,11 @@ func _on_var_y_value_changed(value: float) -> void:
 	pass # Replace with function body.
 func _on_val_path_text_changed(new_text: String) -> void:
 	upData(\"val_path\",new_text)
+	pass # Replace with function body.
+
+
+func _on_del_pressed() -> void:
+	del()
 	pass # Replace with function body.
 "
 
@@ -215,7 +224,7 @@ layout_mode = 2
 layout_mode = 2
 text = "相对于原属性"
 
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer2"]
+[node name="del" type="Button" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "删除该动画"
 
@@ -225,3 +234,4 @@ text = "删除该动画"
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/varX" to="VBoxContainer/HBoxContainer" method="_on_var_x_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/varY" to="VBoxContainer/HBoxContainer" method="_on_var_y_value_changed"]
 [connection signal="text_changed" from="VBoxContainer/HBoxContainer/val_path" to="VBoxContainer/HBoxContainer" method="_on_val_path_text_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/del" to="VBoxContainer/HBoxContainer" method="_on_del_pressed"]

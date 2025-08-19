@@ -43,9 +43,11 @@ func _on_cb_sco_end_toggled(toggled_on: bool) -> void:
 
 
 func _on_btn_del_pressed() -> void:
-	get_parent().get_parent().story_list.remove_at(get_parent().get_parent().now_talk)
-	get_parent().get_parent().now_talk-=1
-	pass # Replace with function body.
+	if get_parent().get_parent().now_talk>0:
+		get_parent().get_parent().story_list.remove_at(get_parent().get_parent().now_talk)
+		get_parent().get_parent().now_talk-=1
+	else:
+		get_parent().get_parent().message(\"[color=red]The scene must retain at least one talk.\")
 
 
 func _on_canceled() -> void:

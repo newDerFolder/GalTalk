@@ -60,14 +60,14 @@ func _ready() -> void:
 # 版本历史记录
 const verList = [
 	{
-		\"ver\": \"0.0.1\",
-		\"text\": \"\"\"
-GalTalk 0.0.1 Internal Test Build
+		\"ver\": \"GalTalk 0.1 | Godot 4.4\",
+		\"text\": \"\"\" 
+GalTalk 0.1 Internal Test Build
 After nearly two months of development cycle (kicked off in June 2025), the first internal test version of GalTalk is now officially released.
 Key features completed so far:
 - Basic editor UI framework setup
 - Core character module foundational functionality implementation
-GalTalk 0.0.1 内部测试版
+GalTalk 0.1 内部测试版
 历经近两个月开发周期（2025年6月启动），GalTalk首个内部测试版本今日正式发布。
 当前已完成功能：
 - 基础编辑器UI框架搭建

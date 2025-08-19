@@ -16,11 +16,11 @@ var can_mouse_pressed:bool=true
 
 var cant_inputTime=2
 
-func system_back():
-	if now_talk>0 and now_history_id>-1:
-		now_talk=history_list[now_history_id-1]
-		now_history_id-=1
-		chang_talk()
+#func system_back():
+	#if now_talk>0 and now_history_id>-1:
+		#now_talk=history_list[now_history_id-1]
+		#now_history_id-=1
+		#chang_talk()
 
 
 func get_now_talk():
@@ -58,8 +58,8 @@ func next_talk():
 		now_talk=0
 	elif get_now_talk()[\"talk_goto\"]==\"end\":
 		now_talk=story_list.size()-1
-	else:
-		now_talk=int(get_now_talk()[\"talk_goto\"])
+	elif get_now_talk()[\"talk_goto\"]==\"jumpId\":
+		now_talk=int(get_now_talk()[\"talk_nextRes\"])
 
 func record_history():
 	if history_isHas():

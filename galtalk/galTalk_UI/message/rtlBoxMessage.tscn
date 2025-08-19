@@ -1,37 +1,41 @@
 [gd_scene load_steps=4 format=3 uid="uid://b0cq5rrlh7fx5"]
 
+[sub_resource type="GDScript" id="GDScript_nl7sq"]
+script/source = "extends CanvasLayer
+
+var Lposition
+var Lscale
+var Ltext
+
+func _ready() -> void:
+	$RichTextLabel.position=Lposition
+	$RichTextLabel.scale=Lscale
+	$RichTextLabel.text=Ltext
+	
+	var tw=create_tween()
+	var tw2=create_tween()
+	tw2.tween_property($RichTextLabel,\"position\",Vector2(0,-400),3).as_relative()
+	tw.tween_property($RichTextLabel,\"self_modulate\",Color(1,1,1,0.1),0.5).as_relative()
+"
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nl7sq"]
 bg_color = Color(0, 0, 0, 0.392157)
 
 [sub_resource type="Theme" id="Theme_6wjsh"]
 RichTextLabel/styles/normal = SubResource("StyleBoxFlat_nl7sq")
 
-[sub_resource type="GDScript" id="GDScript_nl7sq"]
-script/source = "extends RichTextLabel
+[node name="RtlBoxMessage" type="CanvasLayer"]
+layer = 100
+script = SubResource("GDScript_nl7sq")
 
-func _ready() -> void:
-	var tw=create_tween()
-	var tw2=create_tween()
-	tw2.tween_property(self,\"position\",Vector2(0,-400),3).as_relative()
-	tw.tween_property(self,\"self_modulate\",Color(1,1,1,0.1),0.5).as_relative()
-"
-
-[node name="RtlBoxMessage" type="RichTextLabel"]
-custom_minimum_size = Vector2(300, 20)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -10.0
-offset_right = 150.0
-offset_bottom = 10.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_right = 400.0
+offset_bottom = 40.0
 theme = SubResource("Theme_6wjsh")
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
-scroll_active = false
+text = "message "
+fit_content = true
+autowrap_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
-script = SubResource("GDScript_nl7sq")
