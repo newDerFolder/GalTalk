@@ -60,6 +60,31 @@ func _ready() -> void:
 # 版本历史记录
 const verList = [
 	{
+		\"ver\": \"GalTalk 0.2 | Godot 4.4\",
+		\"text\": \"\"\" 
+GalTalk 0.2 内部测试版
+经过了近半个月的开发GalTalk来到了0.2版本，在这个版本，更新了
+简陋的音频与音乐选择
+对话分支功能，不仅是跳转对话，还能加载Gal场景和gd脚本，以实现丰富的效果。
+目前已经做出最基本功能
+但GalTalk不会止步于此，
+未来我们将使得视觉小说的制作更加简单并且快速
+同时兼具扩展性，欢迎各位的体验与反馈这将是我们的动力和助力。
+
+
+GalTalk 0.2 Internal Test Version
+After nearly half a month of development, GalTalk has reached version 0.2. In this version, the following updates have been made:
+A rudimentary audio and music selection feature.
+A dialogue branching function, which not only allows for dialogue jumps but also enables the loading of Gal scenes and gd scripts to achieve rich effects.
+The most basic functions have already been implemented.
+However, GalTalk will not stop here.
+In the future, we will make the creation of visual novels even simpler and faster, while also ensuring expandability.
+We welcome everyone to try it out and provide feedback, which will be our motivation and support.
+
+2025/8/30
+\"\"\"
+	},
+	{
 		\"ver\": \"GalTalk 0.1 | Godot 4.4\",
 		\"text\": \"\"\" 
 GalTalk 0.1 Internal Test Build
