@@ -14,6 +14,8 @@ func _ready() -> void:
 
 func chang():
 	$startAnime.change()
+	$loopAnime.change()
+	$endAnime.change()
 
 func get_now_role():
 	return get_mainNode().story_list[get_now_talk()][\"roles\"][now_role_id]
@@ -28,8 +30,13 @@ func get_emptyAnimeTw():
 		\"val_path\":\"\",
 		\"val_x\":0,
 		\"val_y\":0,
+		\"val_r\":1,
+		\"val_g\":1,
+		\"val_b\":1,
+		\"val_a\":1,
 		\"startTime\":0,
 		\"keepTime\":1,
+		\"as_relative\":true
 	}
 func add_newAnimeToGroup(group_name):
 	get_now_role()[group_name].append(get_emptyAnimeTw())
@@ -62,6 +69,12 @@ script/source = "extends VBoxContainer
 var group_name=\"twAnime_start\"
 
 
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
+
 func change():
 	var passNum=0
 	for i in get_children():
@@ -92,12 +105,56 @@ func _pressed() -> void:
 script/source = "extends VBoxContainer
 
 var group_name=\"twAnime_loop\"
+
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
+
+func change():
+	var passNum=0
+	for i in get_children():
+		if passNum<2:
+			passNum+=1
+		else:
+			i.queue_free()
+	var num=0
+	for i in $\"..\".get_now_role()[\"twAnime_loop\"]:
+		var twp=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_roleAnime.tscn\").instantiate()
+		twp.id=num
+		add_child(twp)
+		twp.change()
+		num+=1
 "
 
 [sub_resource type="GDScript" id="GDScript_aixfh"]
 script/source = "extends VBoxContainer
 
 var group_name=\"twAnime_end\"
+
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
+
+func change():
+	var passNum=0
+	for i in get_children():
+		if passNum<2:
+			passNum+=1
+		else:
+			i.queue_free()
+	var num=0
+	for i in $\"..\".get_now_role()[\"twAnime_end\"]:
+		var twp=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_roleAnime.tscn\").instantiate()
+		twp.id=num
+		add_child(twp)
+		twp.change()
+		num+=1
 "
 
 [node name="WinRoleAnime" type="ConfirmationDialog"]
@@ -149,12 +206,22 @@ script = SubResource("GDScript_uu2uk")
 layout_mode = 2
 text = "loop anime:"
 
-[node name="endStart" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="ScrollContainer/VBoxContainer/loopAnime"]
+layout_mode = 2
+text = "add new TwAnime"
+script = SubResource("GDScript_knpyv")
+
+[node name="endAnime" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_aixfh")
 
-[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/endStart"]
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/endAnime"]
 layout_mode = 2
 text = "end anime:"
+
+[node name="Button" type="Button" parent="ScrollContainer/VBoxContainer/endAnime"]
+layout_mode = 2
+text = "add new TwAnime"
+script = SubResource("GDScript_knpyv")
 
 [connection signal="item_selected" from="ScrollContainer/VBoxContainer/chooseRole/OptionButton" to="ScrollContainer/VBoxContainer/chooseRole" method="_on_option_button_item_selected"]

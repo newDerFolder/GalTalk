@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckv082y8k2vch"]
+
+[sub_resource type="GDScript" id="GDScript_j1h20"]
+script/source = "extends Button
+
+var item:Dictionary
+
+func get_mainNode():
+	return get_parent().get_parent()
+
+func _ready() -> void:
+	text=item[\"text\"]
+
+func _pressed() -> void:
+	get_mainNode().nextItemDo(item)
+"
+
+[node name="BtnChooseItem" type="Button"]
+script = SubResource("GDScript_j1h20")

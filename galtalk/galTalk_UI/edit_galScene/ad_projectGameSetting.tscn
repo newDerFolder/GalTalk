@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://evfb7thu0im8"]
+
+[node name="AdProjectGameSetting" type="AcceptDialog"]
+initial_position = 2
+size = Vector2i(600, 500)
+visible = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 592.0
+offset_bottom = 451.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 1
+
+[node name="talkText" type="TabContainer" parent="ScrollContainer/TabContainer"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 0
+
+[node name="textPanel" type="VBoxContainer" parent="ScrollContainer/TabContainer/talkText"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Label" type="Label" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+text = "对话框样式:"
+
+[node name="png" type="HBoxContainer" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="ScrollContainer/TabContainer/talkText/textPanel/png"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="choose" type="Button" parent="ScrollContainer/TabContainer/talkText/textPanel/png"]
+layout_mode = 2
+text = "choose"
+
+[node name="Label2" type="Label" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+text = "对话框默认位置:"
+
+[node name="pos" type="HBoxContainer" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+
+[node name="x" type="SpinBox" parent="ScrollContainer/TabContainer/talkText/textPanel/pos"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "x"
+
+[node name="y" type="SpinBox" parent="ScrollContainer/TabContainer/talkText/textPanel/pos"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "y"
+
+[node name="Label3" type="Label" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+text = "对话框默认大小:"
+
+[node name="scale" type="HBoxContainer" parent="ScrollContainer/TabContainer/talkText/textPanel"]
+layout_mode = 2
+
+[node name="x" type="SpinBox" parent="ScrollContainer/TabContainer/talkText/textPanel/scale"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "x"
+
+[node name="y" type="SpinBox" parent="ScrollContainer/TabContainer/talkText/textPanel/scale"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "y"
+
+[node name="textTheme" type="VBoxContainer" parent="ScrollContainer/TabContainer/talkText"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="input" type="TabContainer" parent="ScrollContainer/TabContainer"]
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 1
+
+[node name="click" type="VBoxContainer" parent="ScrollContainer/TabContainer/input"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/TabContainer/input/click"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/TabContainer/input/click/HBoxContainer"]
+layout_mode = 2
+text = "初始化场景后保持禁止点击时间"
+
+[node name="SpinBox" type="SpinBox" parent="ScrollContainer/TabContainer/input/click/HBoxContainer"]
+layout_mode = 2
+step = 0.001
+suffix = "s"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ScrollContainer/TabContainer/input/click"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/TabContainer/input/click/HBoxContainer2"]
+layout_mode = 2
+text = "有效的剧情推进点击区域:"
+
+[node name="SpinBox" type="SpinBox" parent="ScrollContainer/TabContainer/input/click/HBoxContainer2"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "x"
+
+[node name="SpinBox2" type="SpinBox" parent="ScrollContainer/TabContainer/input/click/HBoxContainer2"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "y"
+
+[node name="galtalkSystemBar" type="VBoxContainer" parent="ScrollContainer/TabContainer/input"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="CheckBox" type="CheckBox" parent="ScrollContainer/TabContainer/input/galtalkSystemBar"]
+layout_mode = 2
+text = "启用galtalk自带用户功能键"

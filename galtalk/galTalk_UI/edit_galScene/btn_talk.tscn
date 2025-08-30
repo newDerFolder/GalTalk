@@ -12,7 +12,7 @@ func _process(delta: float) -> void:
 		self_modulate=Color(1,1,1,1)
 	if id<get_gen().story_list.size():
 		text=str(id)+\" \"+get_gen().story_list[id][\"text_role\"]+\":\"+get_gen().story_list[id][\"text_textbox\"]
-		text+=\"\\nnext:\"+get_gen().story_list[id][\"talk_goto\"]+\" \"+str(get_gen().story_list[id][\"talk_nextRes\"])
+		#text+=\"\\nnext:\"+get_gen().story_list[id][\"talk_goto\"]+\" \"+str(get_gen().story_list[id][\"talk_nextRes\"])
 		visible=true
 	elif id==get_gen().story_list.size():
 		text=\"点击增加新对话\"

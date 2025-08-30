@@ -7,13 +7,31 @@ var id=-1
 var talk_id=-1
 var twTime=0
 var twAnime_start=[]
+var twAnime_loop=[]
+var twAnime_end=[]
+var twAnime_loolPlay=[]
 var read_twGroup
+var twAnime_startPlayOk=false
+var twAnime_endPlayOk=false
+var twAnime_loopTime=0
+var twAnime_endTime=0
+var nextWill=false
+var twAnime_playingEnd=false
+
 
 func _ready() -> void:
 	twAnime_start=get_roleData()[\"twAnime_start\"].duplicate()
-	$Timer.start(0.05)
+	twAnime_loop=get_roleData()[\"twAnime_loop\"].duplicate()
+	for i in twAnime_loop:
+		if i[\"startTime\"]+i[\"keepTime\"]>twAnime_loopTime:
+			twAnime_loopTime=i[\"startTime\"]+i[\"keepTime\"]
+	twAnime_end=get_roleData()[\"twAnime_end\"].duplicate()
+	for i in twAnime_end:
+		if i[\"startTime\"]+i[\"keepTime\"]>twAnime_endTime:
+			twAnime_endTime=i[\"startTime\"]+i[\"keepTime\"]
+	$Timer.start(0.01)
 
-func _process(delta: float) -> void:
+func playAnime():
 	if twAnime_start.size()>0:
 		read_twGroup=\"start\"
 		var num=0
@@ -21,26 +39,76 @@ func _process(delta: float) -> void:
 			new_tw(i,num)
 			num+=1
 		return
+	if twAnime_startPlayOk==false:
+		twAnime_startPlayOk=true
+		twTime=0
+	
+	if nextWill==false:
+		read_twGroup=\"loop\"
+		if twAnime_loopTime<=twTime:
+			twTime = 0
+			twAnime_loolPlay = twAnime_loop.duplicate()
+		var num=0
+		for i in twAnime_loolPlay:
+			new_tw(i,num)
+			num+=1
+		return
+	
+	if nextWill==true:
+		if twAnime_playingEnd==false:
+			twAnime_playingEnd=true
+			twTime=0
+		
+		if twAnime_end.size()>0:
+			read_twGroup=\"end\"
+			var num=0
+			for i in twAnime_end:
+				new_tw(i,num)
+				num+=1
+			return
+		if twAnime_endTime<twTime:
+			twAnime_endPlayOk=true
 
 func new_tw(data:Dictionary,num):
 	if data[\"startTime\"]>twTime:
 		return
 	elif data[\"tw_property\"]==\"position\":
 		var tw=get_tree().create_tween()
-		tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
+		if bool(data[\"as_relative\"])==true:
+			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).as_relative()
+		else:
+			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
 		del_tw(num)
 	elif data[\"tw_property\"]==\"scale\":
 		var tw=get_tree().create_tween()
-		tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
+		if bool(data[\"as_relative\"])==true:
+			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).as_relative()
+		else:
+			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"])
 		del_tw(num)
 	elif data[\"tw_property\"]==\"texture\":
 		var tw=get_tree().create_tween()
-		tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"])
+		if bool(data[\"as_relative\"])==true:
+			tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"]).as_relative()
+		else:
+			tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"])
+		del_tw(num)
+	elif data[\"tw_property\"]==\"modulate\":
+		var tw=get_tree().create_tween()
+		if bool(data[\"as_relative\"])==true:
+			tw.tween_property(self,data[\"tw_property\"],Color(float(data[\"val_r\"]),float(data[\"val_g\"]),float(data[\"val_b\"]),float(data[\"val_a\"])),data[\"keepTime\"]).as_relative()
+		else:
+			tw.tween_property(self,data[\"tw_property\"],Color(float(data[\"val_r\"]),float(data[\"val_g\"]),float(data[\"val_b\"]),float(data[\"val_a\"])),data[\"keepTime\"])
 		del_tw(num)
 
 func del_tw(id):
 	if read_twGroup==\"start\":
 		twAnime_start.remove_at(id)
+	elif read_twGroup==\"loop\":
+		twAnime_loolPlay.remove_at(id)
+	elif read_twGroup==\"end\":
+		twAnime_end.remove_at(id)
+
 
 func get_mainNode():
 	return get_parent().get_parent().get_parent()
@@ -67,7 +135,8 @@ func kind_upData():
 
 
 func _on_timer_timeout() -> void:
-	twTime+=0.05
+	twTime+=0.01
+	playAnime()
 	pass # Replace with function body.
 "
 

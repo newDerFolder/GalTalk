@@ -3,6 +3,9 @@
 [sub_resource type="GDScript" id="GDScript_vcjbi"]
 script/source = "extends ConfirmationDialog
 
+func _ready() -> void:
+	$ScrollContainer/HFlowContainer.chang_role_index()
+
 func _process(delta: float) -> void:
 	$ScrollContainer.size=size-Vector2i(0,25)
 	$ScrollContainer/HFlowContainer.size=size-Vector2i(0,25)
@@ -16,6 +19,22 @@ func upData_role():
 
 func _on_confirmed() -> void:
 	upData_role()
+	pass # Replace with function body.
+
+func upData(data:String,val):
+	get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][$ScrollContainer/HFlowContainer.now_role_id][data]=val
+	upData_role()
+
+func _on_x_value_changed(value: float) -> void:
+	upData(\"role_scaleX\",value)
+	pass # Replace with function body.
+	
+func _on_y_value_changed(value: float) -> void:
+	upData(\"role_scaleY\",value)
+	pass # Replace with function body.
+
+func _on_rot_value_changed(value: float) -> void:
+	upData(\"role_rot\",value)
 	pass # Replace with function body.
 "
 
@@ -45,6 +64,10 @@ func chang_role_index():
 	$rolePos/x.value=temp_x
 	$rolePos/y.value=temp_y
 	$roleRes/photo/Sprite2D.text=get_now_role()[\"photo_path\"]
+	$roleScale/x.value=get_now_role()[\"role_scaleX\"]
+	$roleScale/y.value=get_now_role()[\"role_scaleY\"]
+	print(get_now_role()[\"role_rot\"])
+	$roleRotAndVisible/rot.value=get_now_role()[\"role_rot\"]
 	#updata_role()
 
 
@@ -128,6 +151,12 @@ func upData_role():
 
 func upData_self():
 	$role_name.text=$\"..\".get_now_role[\"role_name\"]
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
 "
 
 [sub_resource type="GDScript" id="GDScript_4wvcp"]
@@ -194,6 +223,12 @@ func show_rename():
 [sub_resource type="GDScript" id="GDScript_2ool8"]
 script/source = "extends HBoxContainer
 
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
+
 func upData_role():
 	get_role()[\"role_posX\"]=$x.value
 	get_role()[\"role_posY\"]=$y.value
@@ -215,12 +250,24 @@ func _on_y_value_changed(value: float) -> void:
 [sub_resource type="GDScript" id="GDScript_v8edh"]
 script/source = "extends HBoxContainer
 
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
+
 func upData_role():
 	$\"..\".updata_role()
 "
 
 [sub_resource type="GDScript" id="GDScript_scmeo"]
 script/source = "extends HBoxContainer
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
 
 func upData_role():
 	$\"..\".updata_role()
@@ -230,6 +277,12 @@ func upData_role():
 script/source = "extends HBoxContainer
 
 var now_role_kind=\"photo\"
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
 
 func upData_role():
 	$\"..\".updata_role()
@@ -249,6 +302,12 @@ func _on_item_selected(index: int) -> void:
 script/source = "extends VBoxContainer
 
 var photo_path=\"\"
+
+func _process(delta: float) -> void:
+	if $\"../chooseRole/OptionButton\".selected==-1:
+		visible=false
+	else:
+		visible=true
 
 func upData_role():
 	$\"..\".updata_role()
@@ -415,25 +474,19 @@ script = SubResource("GDScript_2ool8")
 layout_mode = 2
 text = "角色坐标:"
 
-[node name="Label2" type="Label" parent="ScrollContainer/HFlowContainer/rolePos"]
-layout_mode = 2
-text = "x"
-
 [node name="x" type="SpinBox" parent="ScrollContainer/HFlowContainer/rolePos"]
 layout_mode = 2
 min_value = -5000.0
 max_value = 5000.0
 step = 0.001
-
-[node name="Label3" type="Label" parent="ScrollContainer/HFlowContainer/rolePos"]
-layout_mode = 2
-text = "y"
+prefix = "x"
 
 [node name="y" type="SpinBox" parent="ScrollContainer/HFlowContainer/rolePos"]
 layout_mode = 2
 min_value = -5000.0
 max_value = 5000.0
 step = 0.001
+prefix = "y"
 
 [node name="roleScale" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
 layout_mode = 2
@@ -443,23 +496,19 @@ script = SubResource("GDScript_v8edh")
 layout_mode = 2
 text = "角色大小:"
 
-[node name="Label2" type="Label" parent="ScrollContainer/HFlowContainer/roleScale"]
-layout_mode = 2
-text = "x"
-
 [node name="x" type="SpinBox" parent="ScrollContainer/HFlowContainer/roleScale"]
 layout_mode = 2
 max_value = 5000.0
 step = 0.001
-
-[node name="Label3" type="Label" parent="ScrollContainer/HFlowContainer/roleScale"]
-layout_mode = 2
-text = "y"
+value = 1.0
+prefix = "x"
 
 [node name="y" type="SpinBox" parent="ScrollContainer/HFlowContainer/roleScale"]
 layout_mode = 2
 max_value = 5000.0
 step = 0.001
+value = 1.0
+prefix = "y"
 
 [node name="roleRotAndVisible" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
 layout_mode = 2
@@ -473,13 +522,6 @@ text = "角色角度:"
 layout_mode = 2
 max_value = 5000.0
 step = 0.001
-
-[node name="Label2" type="Label" parent="ScrollContainer/HFlowContainer/roleRotAndVisible"]
-layout_mode = 2
-text = "角色可见性:"
-
-[node name="CheckButton" type="CheckButton" parent="ScrollContainer/HFlowContainer/roleRotAndVisible"]
-layout_mode = 2
 
 [node name="roleKind" type="HBoxContainer" parent="ScrollContainer/HFlowContainer"]
 layout_mode = 2
@@ -560,5 +602,8 @@ text = "开发中，敬请期待"
 [connection signal="confirmed" from="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" to="ScrollContainer/HFlowContainer/roleInfo/ConfirmationDialog" method="_on_confirmed"]
 [connection signal="value_changed" from="ScrollContainer/HFlowContainer/rolePos/x" to="ScrollContainer/HFlowContainer/rolePos" method="_on_x_value_changed"]
 [connection signal="value_changed" from="ScrollContainer/HFlowContainer/rolePos/y" to="ScrollContainer/HFlowContainer/rolePos" method="_on_y_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/HFlowContainer/roleScale/x" to="." method="_on_x_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/HFlowContainer/roleScale/y" to="." method="_on_y_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/HFlowContainer/roleRotAndVisible/rot" to="." method="_on_rot_value_changed"]
 [connection signal="item_selected" from="ScrollContainer/HFlowContainer/roleKind/OptionButton" to="ScrollContainer/HFlowContainer/roleKind/OptionButton" method="_on_item_selected"]
 [connection signal="pressed" from="ScrollContainer/HFlowContainer/roleRes/photo/Button" to="ScrollContainer/HFlowContainer/roleRes/photo/Button" method="_on_pressed"]

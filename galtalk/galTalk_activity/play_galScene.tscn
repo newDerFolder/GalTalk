@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dr2ytfvqvkg2o"]
+[gd_scene load_steps=12 format=3 uid="uid://dr2ytfvqvkg2o"]
 
+[ext_resource type="Texture2D" uid="uid://3uvm3ukdc81n" path="res://galtalk/galTalk_sc/gui_talkPanel.png" id="1_aegij"]
 [ext_resource type="Texture2D" uid="uid://enqi2gexdxjy" path="res://galtalk/galTalk_sc/ui_zungXin.png" id="1_hbs8p"]
 
 [sub_resource type="GDScript" id="GDScript_gbmx4"]
@@ -14,8 +15,9 @@ var now_history_id:int=-1
 
 var can_mouse_pressed:bool=true
 
-var cant_inputTime=2
+var cant_inputTime=0.5
 
+var willNextTalk=false
 #func system_back():
 	#if now_talk>0 and now_history_id>-1:
 		#now_talk=history_list[now_history_id-1]
@@ -32,7 +34,13 @@ func _ready() -> void:
 	now_talk=0
 	chang_talk()
 
+func _process(delta: float) -> void:
+	if willNextTalk==true:
+		next_talk()
+
 func chang_talk():
+	$cantInputTimer.start(cant_inputTime)
+	willNextTalk=false
 	$game.chang_talk()
 	$gui.chang_talk()
 
@@ -45,21 +53,58 @@ func _input(event: InputEvent) -> void:
 			print(\"鼠标左键单击完成\")
 			if get_now_talk()[\"talk_kind\"]==\"common\":
 				next_talk()
-				chang_talk()
 
 func next_talk():
+	willNextTalk=true
+	if $game.can_change()==false or $cantInputTimer.time_left>0:
+		return
 	record_history()
-	if get_now_talk()[\"talk_goto\"]==\"next\":
+	if get_now_talk()[\"talk_chooseList\"].size()==0:
+		nextItemDo(GalEditor.empty_nextItem())
+	elif get_now_talk()[\"talk_chooseList\"].size()==1 and get_now_talk()[\"talk_cantChoose\"]==true:
+		nextItemDo(get_now_talk()[\"talk_chooseList\"][0])
+	else:
+		if $chooseItemList.get_children().size()>0:
+			return
+		for i in get_now_talk()[\"talk_chooseList\"]:
+			var btn=preload(\"res://galtalk/galTalk_UI/play_galScene/btn_chooseItem.tscn\").instantiate()
+			btn.item=i
+			$chooseItemList.add_child(btn)
+	chang_talk()
+
+
+func nextItemDo(item:Dictionary):
+	var changeTalk=true
+	
+	if item[\"kind\"]==\"next\":
 		if now_talk<story_list.size()-1:
 			now_talk+=1
+			print(\"next done\")
 		else:
 			queue_free()
-	elif get_now_talk()[\"talk_goto\"]==\"top\":
-		now_talk=0
-	elif get_now_talk()[\"talk_goto\"]==\"end\":
-		now_talk=story_list.size()-1
-	elif get_now_talk()[\"talk_goto\"]==\"jumpId\":
-		now_talk=int(get_now_talk()[\"talk_nextRes\"])
+			print(\"next done and qf\")
+	
+	elif item[\"kind\"]==\"jumpToId\":
+		now_talk=int(item[\"jumpToId\"])
+	elif item[\"kind\"]==\"finish\":
+		queue_free()
+	elif item[\"kind\"]==\"loadScene\":
+		var newGalScene=GalTalk.creat_playSceneToFile(item[\"resPath\"])
+		get_parent().add_child(newGalScene)
+		queue_free()
+	elif item[\"kind\"]==\"script\":
+		var strPath:String=item[\"resPath\"]
+		var newScript=load(strPath).new()
+		add_child(newScript)
+		newScript.galScript()
+		# 必须实现指定的方法 / Must implement the specified method
+	else:
+		changeTalk=false
+	for i in $chooseItemList.get_children():
+		i.queue_free()
+	if changeTalk:
+		chang_talk()
+
 
 func record_history():
 	if history_isHas():
@@ -116,6 +161,12 @@ script/source = "extends Control
 func get_mainNode():
 	return get_parent()
 
+func can_change():
+	if $roleGroup.can_change()==false:
+		return false
+	
+	return true
+
 func chang_talk():
 	if $\"..\".story_list[$\"..\".now_talk].has(\"background\"):
 		$background.texture=load($\"..\".story_list[$\"..\".now_talk][\"background\"])
@@ -127,9 +178,10 @@ func chang_talk():
 	if $\"..\".story_list[$\"..\".now_talk].has(\"background_posX\"):
 		$background.position.x=$\"..\".story_list[$\"..\".now_talk][\"background_posX\"]
 		$background.position.y=$\"..\".story_list[$\"..\".now_talk][\"background_posY\"]
-	
 	$roleGroup.chang_talk()
 	$text.chang_talk()
+	$sound.chang_talk()
+	$BGM.chang_talk()
 "
 
 [sub_resource type="GDScript" id="GDScript_ws5h7"]
@@ -152,6 +204,13 @@ func chang_talk():
 	for role in get_children():
 		role.queue_free()
 	add_newRole()
+
+func can_change():
+	for i in get_children():
+		i.nextWill=true
+		if i.twAnime_endPlayOk==false:
+			return false
+	return true
 "
 
 [sub_resource type="GDScript" id="GDScript_87464"]
@@ -175,24 +234,56 @@ func chang_talk():
 	$trl_text.visible_characters=0
 	$Timer.stop()
 	$Timer.start($\"../..\".story_list[$\"../..\".now_talk][\"text_printTime\"])
-	$trl_text.clear()
-	if get_parent().get_parent().now_talk>-1 and get_parent().get_parent().now_talk<get_parent().get_parent().story_list.size():
-		visible=true
-		if $\"../..\".story_list[$\"../..\".now_talk].has(\"text_posX\"):
-			position.x=$\"../..\".story_list[$\"../..\".now_talk][\"text_posX\"]
-			position.y=$\"../..\".story_list[$\"../..\".now_talk][\"text_posY\"]
-		$rtl_name.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_role\"]
-		
-		$trl_text.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_textbox\"]
-
+	#$trl_text.clear()
+	
+	position=Vector2($\"../..\".story_list[$\"../..\".now_talk][\"text_posX\"],$\"../..\".story_list[$\"../..\".now_talk][\"text_posY\"])
+	$rtl_name.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_role\"]
+	$trl_text.text=$\"../..\".story_list[$\"../..\".now_talk][\"text_textbox\"]
+	if $\"../..\".story_list[$\"../..\".now_talk][\"text_panelVisible\"]:
+		$panel.visible=true
 	else:
-		visible=false
+		$panel.visible=false
 
 
 func _on_timer_timeout() -> void:
 	if $trl_text.visible_characters<$\"../..\".story_list[$\"../..\".now_talk][\"text_textbox\"].length():
 		$trl_text.visible_characters+=1
 		
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_x2pqg"]
+script/source = "extends AudioStreamPlayer
+
+func chang_talk():
+	stop()
+	stream=load(get_NowTalk()[\"sound_res\"])
+	play()
+	pass
+
+func get_NowTalk():
+	return $\"../..\".story_list[$\"../..\".now_talk]
+"
+
+[sub_resource type="GDScript" id="GDScript_aegij"]
+script/source = "extends AudioStreamPlayer
+
+func chang_talk():
+	if stream!=load(get_NowTalk()[\"bgm_res\"]):
+		stream=load(get_NowTalk()[\"bgm_res\"])
+	if get_NowTalk()[\"bgm_restart\"]==true:
+		stop()
+		play()
+	if playing==false:
+		play()
+
+
+func get_NowTalk():
+	return $\"../..\".story_list[$\"../..\".now_talk]
+
+
+func _on_finished() -> void:
+	play()
 	pass # Replace with function body.
 "
 
@@ -211,6 +302,9 @@ func _on_back_pressed() -> void:
 	$\"..\".system_back()
 	pass # Replace with function body.
 "
+
+[sub_resource type="Theme" id="Theme_aegij"]
+Button/font_sizes/font_size = 30
 
 [node name="PlayGalScene" type="Control"]
 layout_mode = 3
@@ -244,22 +338,17 @@ offset_right = 1000.0
 offset_bottom = 650.0
 script = SubResource("GDScript_87464")
 
-[node name="Panel" type="Panel" parent="game/text"]
-layout_mode = 0
-offset_right = 600.0
-offset_bottom = 250.0
-
-[node name="Panel2" type="Panel" parent="game/text"]
-layout_mode = 0
-offset_top = -50.0
-offset_right = 300.0
-offset_bottom = -5.0
+[node name="panel" type="Sprite2D" parent="game/text"]
+self_modulate = Color(1, 1, 1, 0.588235)
+position = Vector2(330, 50)
+scale = Vector2(1.2, 0.9)
+texture = ExtResource("1_aegij")
 
 [node name="rtl_name" type="RichTextLabel" parent="game/text"]
 layout_mode = 0
-offset_left = 10.0
+offset_left = -100.0
 offset_top = -50.0
-offset_right = 210.0
+offset_right = 750.0
 offset_bottom = 10.0
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
@@ -267,17 +356,24 @@ text = "角色昵称"
 
 [node name="trl_text" type="RichTextLabel" parent="game/text"]
 layout_mode = 0
-offset_left = 10.0
-offset_right = 610.0
+offset_left = -100.0
+offset_right = 750.0
 offset_bottom = 250.0
 theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
 text = "请输入文本"
 
 [node name="Sprite2D" type="Sprite2D" parent="game/text"]
+visible = false
 texture = ExtResource("1_hbs8p")
 
 [node name="Timer" type="Timer" parent="game/text"]
+
+[node name="sound" type="AudioStreamPlayer" parent="game"]
+script = SubResource("GDScript_x2pqg")
+
+[node name="BGM" type="AudioStreamPlayer" parent="game"]
+script = SubResource("GDScript_aegij")
 
 [node name="gui" type="Control" parent="."]
 anchors_preset = 0
@@ -379,5 +475,17 @@ text = "hide"
 [node name="cantInputTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="chooseItemList" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_aegij")
+
 [connection signal="timeout" from="game/text/Timer" to="game/text" method="_on_timer_timeout"]
+[connection signal="finished" from="game/BGM" to="game/BGM" method="_on_finished"]
 [connection signal="pressed" from="systemBar/rollback" to="systemBar" method="_on_back_pressed"]

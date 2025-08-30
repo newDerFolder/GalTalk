@@ -33,11 +33,23 @@ func _process(delta: float) -> void:
 	else:
 		$btn_valPath.visible=false
 		$val_path.visible=false
+	if $OptionButton.selected==4:
+		$valR.visible=true
+		$valG.visible=true
+		$valB.visible=true
+		$valA.visible=true
+	else:
+		$valR.visible=false
+		$valG.visible=false
+		$valB.visible=false
+		$valA.visible=false
 
 func get_mainNode():
 	return get_parent().get_parent().get_parent().get_parent().get_mainNode()
 func get_groupName():
 	return get_parent().get_parent().get_parent().group_name
+func get_group():
+	return get_parent().get_parent().get_parent()
 func get_roleId():
 	return get_parent().get_parent().get_parent().get_parent().now_role_id
 func get_AnimeList():
@@ -48,7 +60,8 @@ func upData(property,new_val):
 
 func del():
 	get_AnimeList().remove_at(id)
-	$\"../..\".queue_free()
+	get_group().change()
+	#$\"../..\".queue_free()
 
 func change():
 	var newp=-1
@@ -61,6 +74,10 @@ func change():
 			newp=2
 		\"texture\":
 			newp=3
+		\"modulate\":
+			newp=4
+		\"z_index\":
+			newp=5
 	$OptionButton.select(newp)
 	
 	$startTime.value=get_AnimeList()[id][\"startTime\"]
@@ -68,6 +85,11 @@ func change():
 	$varX.value=get_AnimeList()[id][\"val_x\"]
 	$varY.value=get_AnimeList()[id][\"val_y\"]
 	$val_path.text=get_AnimeList()[id][\"val_path\"]
+	$\"../HBoxContainer2/CheckBox\".button_pressed=bool(get_AnimeList()[id][\"as_relative\"])
+	$valR.value=get_AnimeList()[id][\"val_r\"]
+	$valG.value=get_AnimeList()[id][\"val_g\"]
+	$valB.value=get_AnimeList()[id][\"val_b\"]
+	$valA.value=get_AnimeList()[id][\"val_a\"]
 
 
 func _on_option_button_item_selected(index: int) -> void:
@@ -81,6 +103,10 @@ func _on_option_button_item_selected(index: int) -> void:
 			newp=\"rotation_degrees\"
 		3:
 			newp=\"texture\"
+		4:
+			newp=\"modulate\"
+		3:
+			newp=\"z_index\"
 	upData(\"tw_property\",newp)
 	pass # Replace with function body.
 func _on_start_time_value_changed(value: float) -> void:
@@ -102,6 +128,24 @@ func _on_val_path_text_changed(new_text: String) -> void:
 
 func _on_del_pressed() -> void:
 	del()
+	pass # Replace with function body.
+
+func _on_check_box_toggled(toggled_on: bool) -> void:
+	upData(\"as_relative\",toggled_on)
+	pass # Replace with function body.
+
+
+func _on_val_r_value_changed(value: float) -> void:
+	upData(\"val_r\",value)
+	pass # Replace with function body.
+func _on_val_g_value_changed(value: float) -> void:
+	upData(\"val_g\",value)
+	pass # Replace with function body.
+func _on_val_b_value_changed(value: float) -> void:
+	upData(\"val_b\",value)
+	pass # Replace with function body.
+func _on_val_a_value_changed(value: float) -> void:
+	upData(\"val_a\",value)
 	pass # Replace with function body.
 "
 
@@ -159,7 +203,8 @@ text = "属性:"
 
 [node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-item_count = 5
+selected = 0
+item_count = 6
 popup/item_0/text = "坐标"
 popup/item_0/id = 0
 popup/item_1/text = "尺寸"
@@ -168,8 +213,10 @@ popup/item_2/text = "角度"
 popup/item_2/id = 2
 popup/item_3/text = "图片"
 popup/item_3/id = 3
-popup/item_4/text = "透明度"
+popup/item_4/text = "RGBA"
 popup/item_4/id = 4
+popup/item_5/text = "图层"
+popup/item_5/id = 5
 
 [node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -194,6 +241,7 @@ layout_mode = 2
 text = "值:"
 
 [node name="varX" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 min_value = -99999.0
 max_value = 99999.0
@@ -201,6 +249,7 @@ step = 0.001
 prefix = "x="
 
 [node name="varY" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 min_value = -99999.0
 max_value = 99999.0
@@ -208,20 +257,57 @@ step = 0.001
 prefix = "y="
 
 [node name="val_path" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 placeholder_text = "请输入或选择资源"
 
 [node name="btn_valPath" type="Button" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 text = "choose"
 script = SubResource("GDScript_v5t11")
+
+[node name="valR" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -100.0
+step = 0.001
+value = 1.0
+prefix = "R"
+
+[node name="valG" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -100.0
+step = 0.001
+value = 1.0
+prefix = "G"
+
+[node name="valB" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -100.0
+step = 0.001
+value = 1.0
+prefix = "B"
+
+[node name="valA" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -100.0
+step = 0.001
+value = 1.0
+prefix = "A"
+
+[node name="valZ" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = -2000.0
+max_value = 2000.0
+prefix = "Z"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="CheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
+button_pressed = true
 text = "相对于原属性"
 
 [node name="del" type="Button" parent="VBoxContainer/HBoxContainer2"]
@@ -234,4 +320,9 @@ text = "删除该动画"
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/varX" to="VBoxContainer/HBoxContainer" method="_on_var_x_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/varY" to="VBoxContainer/HBoxContainer" method="_on_var_y_value_changed"]
 [connection signal="text_changed" from="VBoxContainer/HBoxContainer/val_path" to="VBoxContainer/HBoxContainer" method="_on_val_path_text_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/valR" to="VBoxContainer/HBoxContainer" method="_on_val_r_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/valG" to="VBoxContainer/HBoxContainer" method="_on_val_g_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/valB" to="VBoxContainer/HBoxContainer" method="_on_val_b_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/valA" to="VBoxContainer/HBoxContainer" method="_on_val_a_value_changed"]
+[connection signal="toggled" from="VBoxContainer/HBoxContainer2/CheckBox" to="VBoxContainer/HBoxContainer" method="_on_check_box_toggled"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/del" to="VBoxContainer/HBoxContainer" method="_on_del_pressed"]

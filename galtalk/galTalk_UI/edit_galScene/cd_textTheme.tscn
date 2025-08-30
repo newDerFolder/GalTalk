@@ -1,0 +1,98 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5ld6h6fqdoj0"]
+
+[sub_resource type="GDScript" id="GDScript_000cc"]
+script/source = "extends AcceptDialog
+
+func _ready() -> void:
+	$ScrollContainer/VBoxContainer/pos/x.value=get_NowTalk()[\"text_posX\"]
+	$ScrollContainer/VBoxContainer/pos/y.value=get_NowTalk()[\"text_posY\"]
+	$ScrollContainer/VBoxContainer/HBoxContainer/HBoxContainer/rolePanel.button_pressed=bool(get_NowTalk()[\"text_panelVisible\"])
+
+func get_mainNode():
+	return get_parent().get_parent()
+
+func get_NowTalk():
+	return get_mainNode().story_list[get_mainNode().now_talk]
+
+func upData(data:String,val):
+	get_NowTalk()[data]=val
+	get_mainNode().chang_talk()
+
+func _on_x_value_changed(value: float) -> void:
+	upData(\"text_posX\",value)
+	pass # Replace with function body.
+func _on_y_value_changed(value: float) -> void:
+	upData(\"text_posY\",value)
+	pass # Replace with function body.
+func _on_role_panel_toggled(toggled_on: bool) -> void:
+	upData(\"text_panelVisible\",toggled_on)
+	pass # Replace with function body.
+
+
+func _on_canceled() -> void:
+	closeWin()
+	pass # Replace with function body.
+func _on_confirmed() -> void:
+	closeWin()
+	pass # Replace with function body.
+
+func closeWin():
+	get_mainNode().chang_talk()
+"
+
+[node name="CdTextTheme" type="AcceptDialog"]
+title = "文本样式"
+initial_position = 2
+size = Vector2i(400, 400)
+visible = true
+script = SubResource("GDScript_000cc")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 351.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="pos" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/pos"]
+layout_mode = 2
+text = "position:"
+
+[node name="x" type="SpinBox" parent="ScrollContainer/VBoxContainer/pos"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "x"
+
+[node name="y" type="SpinBox" parent="ScrollContainer/VBoxContainer/pos"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+prefix = "y"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "panel visible:"
+
+[node name="rolePanel" type="CheckBox" parent="ScrollContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "rolePanel"
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/pos/x" to="." method="_on_x_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/pos/y" to="." method="_on_y_value_changed"]
+[connection signal="toggled" from="ScrollContainer/VBoxContainer/HBoxContainer/HBoxContainer/rolePanel" to="." method="_on_role_panel_toggled"]

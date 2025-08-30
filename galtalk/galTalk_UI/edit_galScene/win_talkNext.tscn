@@ -5,81 +5,89 @@ script/source = "extends VBoxContainer
 
 func get_mainNode():
 	return get_parent().get_parent().get_parent()
-func get_nowStroy():
+func get_nowStory():
 	return get_mainNode().story_list[get_mainNode().now_talk]
 
 func _ready() -> void:
-	$info/Label2.text=\"id \"+str(get_mainNode().now_talk)+\" \"+get_mainNode().story_list[get_mainNode().now_talk][\"text_role\"]+\":\"+get_mainNode().story_list[get_mainNode().now_talk][\"text_textbox\"]
-	var tempStr=get_nowStroy()[\"talk_goto\"]
-	var tempId
-	match tempStr:
-		\"next\":
-			tempId=0
-		\"finish\":
-			tempId=1
-		\"nextSence\":
-			tempId=2
-		\"var\":
-			tempId=3
-		\"script\":
-			tempId=4
-		\"choose\":
-			tempId=5
-		\"jumpId\":
-			tempId=6
-	$gotoKind/gotoKInd.select(tempId)
+	chang_talk()
+
+func chang_talk():
+	$Label2.text=get_nowStory()[\"text_role\"]+\":\"+get_nowStory()[\"text_textbox\"]
+	$cantChoose.button_pressed=get_nowStory()[\"talk_cantChoose\"]
+	for op in $ScrollContainer/nextOpList.get_children():
+		op.queue_free()
+	var num=0
+	for i in get_nowStory()[\"talk_chooseList\"]:
+		var a=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_nextOp.tscn\").instantiate()
+		a.id=num
+		$ScrollContainer/nextOpList.add_child(a)
+		num+=1
 
 
-func _on_goto_k_ind_item_selected(index: int) -> void:
-	var tempStr
-	match index:
-		0:
-			tempStr=\"next\"
-		1:
-			tempStr=\"finish\"
-		2:
-			tempStr=\"nextSence\"
-		3:
-			tempStr=\"var\"
-		4:
-			tempStr=\"script\"
-		5:
-			tempStr=\"choose\"
-		6:
-			tempStr=\"jumpId\"
-	get_nowStroy()[\"talk_goto\"]=tempStr
+func _on_button_pressed() -> void:
+	var num=0
+	for i in $ScrollContainer/nextOpList.get_children():
+		num+=1
+	get_nowStory()[\"talk_chooseList\"].append(GalEditor.empty_nextItem())
+	var a=preload(\"res://galtalk/galTalk_UI/edit_galScene/btn_nextOp.tscn\").instantiate()
+	a.id=num
+	$ScrollContainer/nextOpList.add_child(a)
 
 
-func _on_id_num_value_changed(value: float) -> void:
-	get_nowStroy()[\"talk_nextRes\"]=int(value)
+func _on_cant_choose_toggled(toggled_on: bool) -> void:
+	get_nowStory()[\"talk_cantChoose\"]=toggled_on
+	pass # Replace with function body.
+
+
+func _on_win_talk_next_canceled() -> void:
+	queue_free()
+	pass # Replace with function body.
+
+
+func _on_win_talk_next_confirmed() -> void:
+	queue_free()
 	pass # Replace with function body.
 "
 
 [node name="WinTalkNext" type="AcceptDialog"]
 title = "talk next"
-initial_position = 2
-size = Vector2i(400, 400)
+initial_position = 1
+size = Vector2i(500, 650)
 visible = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 392.0
-offset_bottom = 351.0
+offset_right = 492.0
+offset_bottom = 601.0
 script = SubResource("GDScript_x0xq7")
 
-[node name="info" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/info"]
+[node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "now talk:"
 
-[node name="Label2" type="Label" parent="VBoxContainer/info"]
+[node name="Label2" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "add new choose item"
+
+[node name="cantChoose" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+text = "直接执行而不进行选择(仅在只有1选项时有效)"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="nextOpList" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
+
+[connection signal="canceled" from="." to="VBoxContainer" method="_on_win_talk_next_canceled"]
+[connection signal="confirmed" from="." to="VBoxContainer" method="_on_win_talk_next_confirmed"]
+[connection signal="pressed" from="VBoxContainer/Button" to="VBoxContainer" method="_on_button_pressed"]
+[connection signal="toggled" from="VBoxContainer/cantChoose" to="VBoxContainer" method="_on_cant_choose_toggled"]

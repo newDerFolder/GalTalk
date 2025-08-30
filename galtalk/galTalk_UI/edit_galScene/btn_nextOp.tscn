@@ -1,0 +1,280 @@
+[gd_scene load_steps=5 format=3 uid="uid://d1mjfyjx72wxl"]
+
+[sub_resource type="GDScript" id="GDScript_fnv06"]
+script/source = "extends Panel
+
+var id:int
+
+
+func get_mainNode():
+	return get_parent().get_parent().get_parent().get_parent().get_parent().get_parent()
+func get_nowTalk():
+	return get_mainNode().story_list[get_mainNode().now_talk]
+func get_nowChooseList():
+	return get_nowTalk()[\"talk_chooseList\"]
+func get_talkEditor():
+	return get_parent().get_parent().get_parent()
+func get_nowChooseItem():
+	return get_nowChooseList()[id]
+func upData(data,val):
+	get_nowChooseItem()[data]=val
+
+
+func _ready() -> void:
+	$VBoxContainer/nextText/LineEdit.text=get_nowChooseItem()[\"text\"]
+	var selct:int
+	match get_nowChooseItem()[\"kind\"]:
+		\"next\":
+			selct=0
+		\"jumpToId\":
+			selct=1
+		\"finish\":
+			selct=2
+		\"loadScene\":
+			selct=3
+		\"script\":
+			selct=4
+	$VBoxContainer/nextKind/OptionButton.select(selct)
+	$VBoxContainer/nextRes/jumpToIdSp.value=int(get_nowChooseItem()[\"jumpToId\"])
+	$VBoxContainer/nextRes/res.text=get_nowChooseItem()[\"resPath\"]
+
+func _process(delta: float) -> void:
+	if get_nowChooseItem()[\"kind\"]==\"jumpToId\":
+		$VBoxContainer/nextRes/jumpToIdSp.visible=true
+	else:
+		$VBoxContainer/nextRes/jumpToIdSp.visible=false
+	if get_nowChooseItem()[\"kind\"]==\"loadScene\" or get_nowChooseItem()[\"kind\"]==\"script\":
+		$VBoxContainer/nextRes/res.visible=true
+		$VBoxContainer/nextRes/resBtn.visible=true
+	else:
+		$VBoxContainer/nextRes/res.visible=false
+		$VBoxContainer/nextRes/resBtn.visible=false
+
+
+
+
+func _on_line_edit_text_changed(new_text: String) -> void:
+	upData(\"text\",new_text)
+	pass # Replace with function body.
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	var selct
+	match index:
+		0:
+			selct = \"next\"
+		1:
+			selct = \"jumpToId\"
+		2:
+			selct = \"finish\"
+		3:
+			selct = \"loadScene\"
+		4:
+			selct = \"script\"
+	upData(\"kind\",selct)
+
+
+func _on_jump_to_id_sp_value_changed(value: float) -> void:
+	upData(\"jumpToId\",value)
+	pass # Replace with function body.
+
+
+func _on_res_text_changed(new_text: String) -> void:
+	upData(\"resPath\",new_text)
+	pass # Replace with function body.
+
+func _on_res_btn_pressed() -> void:
+	choose_brackground_res()
+
+func choose_brackground_res():
+	var file_dialog = FileDialog.new()
+	add_child(file_dialog)
+	# 设置对话框的模式（例如，打开文件）
+	file_dialog.file_mode = 0
+	# 设置对话框的标题
+	file_dialog.title = \"选择文件\"
+	# 设置允许的文件类型（可选）
+	file_dialog.filters = [\"*.*\"]
+	# 连接信号
+	file_dialog.connect(\"file_selected\", Callable(self, \"_on_file_selected\"))
+	# 显示对话框
+	file_dialog.popup_centered()
+# 回调函数：当用户选择文件时触发
+func _on_file_selected(path: String):
+	$VBoxContainer/nextRes/res.text=path
+	_on_res_text_changed(path)
+
+
+func _on_del_pressed() -> void:
+	get_nowChooseList().remove_at(id)
+	get_talkEditor().chang_talk()
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id="GDScript_5p8pj"]
+script/source = "extends OptionButton
+
+func _ready() -> void:
+	add_item(\"next\",0)#继续下一个对话
+	add_item(\"jumoTo\",1)
+	add_item(\"finish\",2)
+	add_item(\"loadScene\",3)
+	add_item(\"script\",4)
+"
+
+[sub_resource type="GDScript" id="GDScript_kppdu"]
+script/source = "extends OptionButton
+
+func _ready() -> void:
+	add_item(\"pass\",-1)
+	add_item(\"equals\",0)
+	add_item(\"plusEquals​\",1)
+"
+
+[sub_resource type="GDScript" id="GDScript_7ibwx"]
+script/source = "extends OptionButton
+
+func _ready() -> void:
+	add_item(\"no\",0)
+	add_item(\"SceneVar\",1)
+	add_item(\"projectVar\",2)
+	add_item(\"script\",3)
+"
+
+[node name="BtnNextOp" type="Panel"]
+custom_minimum_size = Vector2(400, 150)
+script = SubResource("GDScript_fnv06")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="nextText" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/nextText"]
+layout_mode = 2
+text = "选项文本:"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/nextText"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="nextKind" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/nextKind"]
+layout_mode = 2
+text = "选项类型:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/nextKind"]
+layout_mode = 2
+script = SubResource("GDScript_5p8pj")
+
+[node name="nextRes" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="jumpToIdSp" type="SpinBox" parent="VBoxContainer/nextRes"]
+visible = false
+layout_mode = 2
+max_value = 9999.0
+prefix = "id"
+
+[node name="res" type="LineEdit" parent="VBoxContainer/nextRes"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="resBtn" type="Button" parent="VBoxContainer/nextRes"]
+layout_mode = 2
+text = "choose"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="changeKind" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/changeKind"]
+layout_mode = 2
+text = "选择后变量:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/changeKind"]
+layout_mode = 2
+script = SubResource("GDScript_kppdu")
+
+[node name="changeRes" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/changeRes"]
+layout_mode = 2
+text = "选择变量:"
+
+[node name="varList" type="OptionButton" parent="VBoxContainer/changeRes"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/changeRes"]
+layout_mode = 2
+text = "赋值为:"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/changeRes"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="haveKind" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/haveKind"]
+layout_mode = 2
+text = "出现条件类型:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/haveKind"]
+layout_mode = 2
+script = SubResource("GDScript_7ibwx")
+
+[node name="haveRes" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/haveRes"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/haveRes"]
+layout_mode = 2
+max_value = 99999.0
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="set" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="del" type="Button" parent="VBoxContainer/set"]
+layout_mode = 2
+text = "del"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/set"]
+layout_mode = 2
+
+[node name="up" type="Button" parent="VBoxContainer/set"]
+layout_mode = 2
+text = "up"
+
+[node name="down" type="Button" parent="VBoxContainer/set"]
+layout_mode = 2
+text = "down"
+
+[connection signal="text_changed" from="VBoxContainer/nextText/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="item_selected" from="VBoxContainer/nextKind/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="VBoxContainer/nextRes/jumpToIdSp" to="." method="_on_jump_to_id_sp_value_changed"]
+[connection signal="text_changed" from="VBoxContainer/nextRes/res" to="." method="_on_res_text_changed"]
+[connection signal="pressed" from="VBoxContainer/nextRes/resBtn" to="." method="_on_res_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/set/del" to="." method="_on_del_pressed"]
