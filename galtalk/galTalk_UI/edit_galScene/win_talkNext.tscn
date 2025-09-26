@@ -59,7 +59,7 @@ visible = true
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 492.0
-offset_bottom = 601.0
+offset_bottom = 609.0
 script = SubResource("GDScript_x0xq7")
 
 [node name="Label" type="Label" parent="VBoxContainer"]

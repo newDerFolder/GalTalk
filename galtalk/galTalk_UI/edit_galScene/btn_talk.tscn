@@ -14,9 +14,9 @@ func _process(delta: float) -> void:
 		text=str(id)+\" \"+get_gen().story_list[id][\"text_role\"]+\":\"+get_gen().story_list[id][\"text_textbox\"]
 		#text+=\"\\nnext:\"+get_gen().story_list[id][\"talk_goto\"]+\" \"+str(get_gen().story_list[id][\"talk_nextRes\"])
 		visible=true
-	elif id==get_gen().story_list.size():
-		text=\"点击增加新对话\"
-		visible=true
+	#elif id==get_gen().story_list.size():
+		#text=\"点击增加新对话\"
+		#visible=true
 	else:
 		visible=false
 
@@ -28,13 +28,13 @@ func _on_pressed() -> void:
 	if id<get_gen().story_list.size():
 		get_gen().now_talk=id
 		chang_now_talk()
-	elif id==get_gen().story_list.size():
-		if get_gen().story_list.size()<500:
-			get_gen().add_new_talk()
-			get_gen().now_talk=id
-			chang_now_talk()
-		else:
-			pass
+	#elif id==get_gen().story_list.size():
+		#if get_gen().story_list.size()<500:
+			#get_gen().add_new_talk()
+			#get_gen().now_talk=id
+			#chang_now_talk()
+		#else:
+			#pass
 	else:
 		visible=false
 	pass # Replace with function body.

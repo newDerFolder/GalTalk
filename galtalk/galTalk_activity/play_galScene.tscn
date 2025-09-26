@@ -60,6 +60,7 @@ func next_talk():
 		return
 	record_history()
 	if get_now_talk()[\"talk_chooseList\"].size()==0:
+		print(\"默认进行next\")
 		nextItemDo(GalEditor.empty_nextItem())
 	elif get_now_talk()[\"talk_chooseList\"].size()==1 and get_now_talk()[\"talk_cantChoose\"]==true:
 		nextItemDo(get_now_talk()[\"talk_chooseList\"][0])
@@ -77,6 +78,7 @@ func nextItemDo(item:Dictionary):
 	var changeTalk=true
 	
 	if item[\"kind\"]==\"next\":
+		print(\"next进行\")
 		if now_talk<story_list.size()-1:
 			now_talk+=1
 			print(\"next done\")
@@ -268,9 +270,13 @@ func get_NowTalk():
 [sub_resource type="GDScript" id="GDScript_aegij"]
 script/source = "extends AudioStreamPlayer
 
+var HadBgm_path=null
+
 func chang_talk():
-	if stream!=load(get_NowTalk()[\"bgm_res\"]):
+	if stream!=load(get_NowTalk()[\"bgm_res\"]) and load(get_NowTalk()[\"bgm_res\"])!=null:
 		stream=load(get_NowTalk()[\"bgm_res\"])
+	elif HadBgm_path!=null:
+		stream=load(HadBgm_path)
 	if get_NowTalk()[\"bgm_restart\"]==true:
 		stop()
 		play()
@@ -330,7 +336,6 @@ offset_bottom = 40.0
 script = SubResource("GDScript_ws5h7")
 
 [node name="text" type="Control" parent="game"]
-layout_mode = 3
 anchors_preset = 0
 offset_left = 300.0
 offset_top = 400.0
@@ -382,6 +387,7 @@ offset_bottom = 40.0
 script = SubResource("GDScript_3ofsd")
 
 [node name="systemBar" type="HBoxContainer" parent="."]
+visible = false
 z_index = 4096
 custom_minimum_size = Vector2(1280, 0)
 layout_mode = 0

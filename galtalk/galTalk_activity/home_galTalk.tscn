@@ -1,7 +1,30 @@
-[gd_scene load_steps=6 format=3 uid="uid://6y5ksax3b7k3"]
+[gd_scene load_steps=10 format=3 uid="uid://6y5ksax3b7k3"]
 
 [ext_resource type="Texture2D" uid="uid://bkuilgpos8bp0" path="res://galtalk/galTalk_sc/galTalkBackground.png" id="1_0156r"]
+[ext_resource type="Texture2D" uid="uid://b8rbbrrpqvnnd" path="res://galtalk/galTalk_res/verRes/GalTalkLoadingV0-3.png" id="1_kspi6"]
 [ext_resource type="Texture2D" uid="uid://bsdw1uopp1lqr" path="res://galtalk/galTalk_sc/bg_galtalkHomeBook.png" id="1_tkie3"]
+
+[sub_resource type="GDScript" id="GDScript_imhc5"]
+script/source = "extends Control
+var homeReadyOk=false
+"
+
+[sub_resource type="GDScript" id="GDScript_xso5o"]
+script/source = "extends Control
+
+
+
+func _process(delta: float) -> void:
+	if $\"..\".homeReadyOk==true and $Timer.time_left<=0:
+		visible=false
+"
+
+[sub_resource type="GDScript" id="GDScript_x0wva"]
+script/source = "extends SplitContainer
+
+func _ready() -> void:
+	$\"..\".homeReadyOk=true
+"
 
 [sub_resource type="GDScript" id="GDScript_tkie3"]
 script/source = "extends Button
@@ -109,6 +132,34 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = SubResource("GDScript_imhc5")
+
+[node name="loading" type="Control" parent="."]
+z_index = 4096
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_xso5o")
+
+[node name="ColorRect" type="ColorRect" parent="loading"]
+z_index = 4095
+custom_minimum_size = Vector2(9999, 9999)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.301961, 0.301961, 0.301961, 1)
+
+[node name="TextureRect" type="TextureRect" parent="loading"]
+layout_mode = 0
+offset_right = 1604.0
+offset_bottom = 904.0
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_kspi6")
+
+[node name="Timer" type="Timer" parent="loading"]
+wait_time = 3.0
+one_shot = true
+autostart = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
@@ -120,6 +171,7 @@ texture = ExtResource("1_tkie3")
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
+script = SubResource("GDScript_x0wva")
 
 [node name="edit" type="VBoxContainer" parent="SplitContainer"]
 layout_mode = 2

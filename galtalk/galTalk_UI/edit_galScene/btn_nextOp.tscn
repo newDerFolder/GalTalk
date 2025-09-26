@@ -15,7 +15,10 @@ func get_nowChooseList():
 func get_talkEditor():
 	return get_parent().get_parent().get_parent()
 func get_nowChooseItem():
-	return get_nowChooseList()[id]
+	if get_nowChooseList().size()>id and id>-1:
+		return get_nowChooseList()[id]
+	else:
+		return null
 func upData(data,val):
 	get_nowChooseItem()[data]=val
 
@@ -39,6 +42,9 @@ func _ready() -> void:
 	$VBoxContainer/nextRes/res.text=get_nowChooseItem()[\"resPath\"]
 
 func _process(delta: float) -> void:
+	if get_nowChooseItem()==null:
+		return
+	
 	if get_nowChooseItem()[\"kind\"]==\"jumpToId\":
 		$VBoxContainer/nextRes/jumpToIdSp.visible=true
 	else:
@@ -143,6 +149,8 @@ func _ready() -> void:
 
 [node name="BtnNextOp" type="Panel"]
 custom_minimum_size = Vector2(400, 150)
+offset_right = 400.0
+offset_bottom = 150.0
 script = SubResource("GDScript_fnv06")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]

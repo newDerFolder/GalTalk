@@ -1,0 +1,43 @@
+id,en,zh,ja,ko,ru,fr
+file,file,文件,ファイル,파일,файл,fichier
+project,project,项目,プロジェクト,프로젝트,проект,projet
+scene,scene,场景,シーン,장면,сцена,scène
+background,background,背景,背景,배경,фон,fond
+music,music,音乐,音楽,음악,музыка,musique
+sound,sound,音效,効果音,효과음,звуковые эффекты,effet sonore
+character,character,角色,キャラクター,캐릭터,персонаж,personnage
+text,text,文本,テキスト,텍스트,текст,texte
+talk,talk,对话,会話,대화,диалог,dialogue
+talk list,talk list,对话列表,会話リスト,대화 목록,список диалогов,liste de dialogues
+fix,fix,固定,固定,고정,фиксированный,fixe
+save,save,保存,セーブ,저장,sauvegarder,save
+load,load,读取,ロード,불러오기,charger,load
+Qsave,Qsave,快速保存,クイックセーブ,빠른 저장,sauvegarde rapide,Qsave
+Qload,Qload,快速读取,クイックロード,빠른 불러오기,chargement rapide,Qload
+prev scene,prev scene,上个场景,前のシーン,이전 장면,предыдущая сцена,scène précédente
+next scene,next scene,下个场景,次のシーン,다음 장면,следующая сцена,scène suivante
+quick rollback,quick rollback,快速回退,クイックロールバック,빠른 되감기,быстрый откат,rollback rapide
+rollback,rollback,回退,ロールバック,되감기,откат,rollback
+auto,auto,自动,オート,자동,авто,auto
+quick auto,quick auto,快速自动,クイックオート,빠른 자동,быстрый авто,quick auto
+story tree,story tree,故事树,ストーリーツリー,스토리 트리,дерево истории,arbre de l'histoire
+volume,volume,音量,ボリューム,음량,громкость,volume
+replay,replay,重播,リプレイ,다시보기,повтор,rejouer
+favorite,favorite,收藏,お気に入り,즐겨찾기,избранное,favori
+debug,debug,调试,デバッグ,디버그,отладка,débogage
+style,style,样式,スタイル,스타일,стиль,style
+talk next,talk next,下个对话,次の会話,다음 대화,следующий диалог,dialogue suivant
+edit role,edit role,编辑角色,キャラ編集,캐릭터 편집,редактировать персонажа,modifier le rôle
+role anime,role animation,角色动画,キャラアニメ,캐릭터 애니메이션,анимация персонажа,animation du rôle
+add new TwAnime,add new animation board,增加新动画板,新しいアニメボードを追加,새로운 애니메이션 보드 추가,добавить новую анимационную панель,ajouter une nouvelle planche d'animation
+add new talk,add new dialogue,添加新对话,新しい会話を追加,새로운 대화 추가,добавить новый диалог,ajouter un nouveau dialogue
+copy talk and creat,copy dialogue and create,复制对话并创建,会話をコピーして作成,대화 복사 및 생성,копировать диалог и создать,copier le dialogue et créer
+new file,new file,新建文件,新規ファイル,새 파일,новый файл,nouveau fichier
+open file,open file,打开文件,ファイルを開く,파일 열기,открыть файл,ouvrir le fichier
+save file,save file,保存文件,ファイルを保存,파일 저장,сохранить файл,sauvegarder le fichier
+exit,exit,退出,終了,종료,выход,quitter
+background size,background size,背景尺寸,背景サイズ,배경 크기,размер фона,taille du fond
+background pos,background position,背景位置,背景位置,배경 위치,позиция фона,position du fond
+text edit,text edit,文本编辑,テキスト編集,텍스트 편집,редактирование текста,édition de texte
+text style,text style,文本样式,テキストスタイル,텍스트 스타일,стиль текста,style de texte
+next,next,下一个,次へ,다음,следующий,suivant

@@ -1,28 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cujcqr20ewdae"]
-
-[ext_resource type="Texture2D" uid="uid://dme72lajv3ump" path="res://icon.svg" id="1_35t45"]
+[gd_scene load_steps=2 format=3 uid="uid://cujcqr20ewdae"]
 
 [sub_resource type="GDScript" id="GDScript_yv8oi"]
 script/source = "extends Node2D
 
-func get_mainNode():
-	return get_parent().get_parent().get_parent()
-func get_roleData():
-	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][id]
-func upDataRole():
-	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size() or get_mainNode().now_talk!=talk_id:
-		queue_free()
-	else:
-		basic_upData()
-		kind_upData()
-func basic_upData():
-	position=Vector2(get_roleData()[\"role_posX\"],get_roleData()[\"role_posY\"])
-	scale=Vector2(get_roleData()[\"role_scaleX\"],get_roleData()[\"role_scaleY\"])
-	rotation_degrees=get_roleData()[\"role_rot\"]
-	visible=get_roleData()[\"role_visible\"]
-func kind_upData():
-	if get_roleData()[\"role_kind\"]==\"photo\":
-			$image/photo.texture=load(get_roleData()[\"photo_path\"])
 var id=-1
 var talk_id=-1
 var twTime=0
@@ -71,6 +51,7 @@ func playAnime():
 		pass
 	else:
 		return
+	
 	if nextWill==false:
 		read_twGroup=\"loop\"
 		if twAnime_loopTime<=twTime:
@@ -81,10 +62,12 @@ func playAnime():
 			new_tw(i,num)
 			num+=1
 		return
+	
 	if nextWill==true:
 		if twAnime_playingEnd==false:
 			twAnime_playingEnd=true
 			twTime=0
+		
 		if twAnime_end.size()>0:
 			read_twGroup=\"end\"
 			var num=0
@@ -98,49 +81,60 @@ func playAnime():
 func new_tw(data:Dictionary,num):
 	#if data[\"startTime\"]>twTime:
 		#return
+	
 	if data[\"tw_property\"]==\"position\":
-		var tw=create_tween()
+		var tw=get_tree().create_tween()
 		if bool(data[\"as_relative\"])==true:
 			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).as_relative().set_delay(data[\"startTime\"])
 		else:
 			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).set_delay(data[\"startTime\"])
-		del_tw(num)
+		#del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 	elif data[\"tw_property\"]==\"scale\":
-		var tw=create_tween()
+		var tw=get_tree().create_tween()
 		if bool(data[\"as_relative\"])==true:
 			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).as_relative().set_delay(data[\"startTime\"])
 		else:
 			tw.tween_property(self,data[\"tw_property\"],Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).set_delay(data[\"startTime\"])
-		del_tw(num)
+		#del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 	elif data[\"tw_property\"]==\"texture\":
 		var tw=get_tree().create_tween()
 		if bool(data[\"as_relative\"])==true:
 			tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"]).as_relative().set_delay(data[\"startTime\"])
 		else:
 			tw.tween_property($image/photo,data[\"tw_property\"],load(data[\"val_path\"]),data[\"keepTime\"]).set_delay(data[\"startTime\"])
-		del_tw(num)
+		#del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 	elif data[\"tw_property\"]==\"modulate\":
 		var tw=get_tree().create_tween()
 		if bool(data[\"as_relative\"])==true:
 			tw.tween_property(self,data[\"tw_property\"],Color(float(data[\"val_r\"]),float(data[\"val_g\"]),float(data[\"val_b\"]),float(data[\"val_a\"])),data[\"keepTime\"]).as_relative().set_delay(data[\"startTime\"])
 		else:
 			tw.tween_property(self,data[\"tw_property\"],Color(float(data[\"val_r\"]),float(data[\"val_g\"]),float(data[\"val_b\"]),float(data[\"val_a\"])),data[\"keepTime\"]).set_delay(data[\"startTime\"])
-		del_tw(num)
+		#del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 	elif data[\"tw_property\"]==\"galJump\":
-		# 保存初始位置（只在第一次执行时）
-		#if not has_meta(\"original_pos\"):
-			#set_meta(\"original_pos\", position)
-		#var startPos = get_meta(\"original_pos\")
 		var tw = create_tween()
-		# 向上跳跃
-		tw.tween_property(self, \"position\", position + Vector2(data[\"val_x\"], data[\"val_y\"]), data[\"keepTime\"] * 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT).set_delay(data[\"startTime\"])
-		# 回落到原始位置
-		tw.tween_property(self, \"position\", position - Vector2(data[\"val_x\"], data[\"val_y\"]), data[\"keepTime\"] * 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		# 添加完成回调
-		del_tw(num)
+
+# 1. 起跳：减速上升（Ease-out → 速度越来越慢）
+tw.tween_property(self, \"position\",
+        Vector2(data[\"val_x\"], data[\"val_y\"]),
+        data[\"keepTime\"] * 0.5)          # 上升占一半时间
+  .as_relative()
+  .set_trans(Tween.TRANS_QUAD)
+  .set_ease(Tween.EASE_OUT)             # 关键：Ease-out
+
+# 2. 下落：加速下降（Ease-in → 速度越来越快）
+tw.chain().tween_property(self, \"position\",
+        Vector2(-data[\"val_x\"], -data[\"val_y\"]),
+        data[\"keepTime\"] * 0.5)          # 下落也占一半时间
+  .as_relative()
+  .set_trans(Tween.TRANS_QUAD)
+  .set_ease(Tween.EASE_IN)              # 关键：Ease-in
 	elif data[\"tw_property\"]==\"ease in\":
-		var tw=create_tween()
-		var tw2=create_tween()
+		var tw=get_tree().create_tween()
+		var tw2=get_tree().create_tween()
 		if bool(data[\"as_relative\"])==true:
 			tw2.tween_property(self, \"modulate:a\",0, 0).set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
 			tw2.tween_property(self, \"modulate:a\", 1, data[\"keepTime\"]).set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
@@ -153,7 +147,7 @@ func new_tw(data:Dictionary,num):
 			tw.tween_property(self,\"position\",Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
 			#tw2.tween_property(self,\"modulate\",Color(0,0,0,1),data[\"keepTime\"]).as_relative().set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
 			#del_tw(num)
-		del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 	elif data[\"tw_property\"]==\"ease out\":
 		var tw=get_tree().create_tween()
 		var tw2=get_tree().create_tween()
@@ -167,7 +161,7 @@ func new_tw(data:Dictionary,num):
 			tw.tween_property(self,\"position\",Vector2(data[\"val_x\"],data[\"val_y\"]),data[\"keepTime\"]).set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
 			#tw2.tween_property(self,\"modulate\",Color(0,0,0,1),data[\"keepTime\"]).as_relative().set_trans(Tween.TRANS_QUAD).set_delay(data[\"startTime\"])
 			#del_tw(num)
-		del_tw(num)
+		tw.finished.connect(del_tw.bind(num))
 		
 	#del_tw(num)
 func del_tw(id):
@@ -179,7 +173,28 @@ func del_tw(id):
 		twAnime_end.remove_at(id)
 
 
+func get_mainNode():
+	return get_parent().get_parent().get_parent()
+func get_roleData():
+	return get_mainNode().story_list[get_mainNode().now_talk][\"roles\"][id]
 
+func upDataRole():
+	if id>=get_mainNode().story_list[get_mainNode().now_talk][\"roles\"].size() or get_mainNode().now_talk!=talk_id:
+		queue_free()
+	else:
+		basic_upData()
+		kind_upData()
+
+func basic_upData():
+	position=Vector2(get_roleData()[\"role_posX\"],get_roleData()[\"role_posY\"])
+	scale=Vector2(get_roleData()[\"role_scaleX\"],get_roleData()[\"role_scaleY\"])
+	rotation_degrees=get_roleData()[\"role_rot\"]
+	visible=get_roleData()[\"role_visible\"]
+
+
+func kind_upData():
+	if get_roleData()[\"role_kind\"]==\"photo\":
+			$image/photo.texture=load(get_roleData()[\"photo_path\"])
 
 
 func _on_timer_timeout() -> void:
@@ -194,7 +209,6 @@ script = SubResource("GDScript_yv8oi")
 [node name="image" type="Node2D" parent="."]
 
 [node name="photo" type="Sprite2D" parent="image"]
-texture = ExtResource("1_35t45")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.05

@@ -20,8 +20,6 @@ var operatio_history=[]
 var file_path:String=\"\"
 var file_name:String=\"\"
 var file_kind
-var file_val
-
 
 
 
@@ -66,13 +64,13 @@ func save_galTalkSetting():
 ###编辑器设置###
 
 func _ready() -> void:
-	add_newTalk()
+	add_new_talk()
 	now_talk=0
 	load_galTalkSetting()
 	TranslationServer.set_locale(galTalk_setting[\"language\"])
 	chang_talk()
 
-func add_newTalk():
+func add_new_talk():
 	if now_talk>-1:
 		story_list.append(GalEditor.empty_talk())
 		if story_list[now_talk].has(\"background\"):
@@ -83,17 +81,7 @@ func add_newTalk():
 		
 	else:
 		story_list.append(GalEditor.empty_talk())
-	
-	now_talk=story_list.size()-1
-	chang_talk()
 
-func add_copyTalk():
-	if now_talk>-1:
-		story_list.append((story_list[now_talk].duplicate(true)))
-	else:
-		story_list.append(GalEditor.empty_talk())
-	now_talk=story_list.size()-1
-	chang_talk()
 
 
 func get_gameSeeting(seeting:String):
@@ -639,7 +627,6 @@ offset_bottom = 40.0
 
 [node name="mb_galTalk" type="MenuButton" parent="toolBar/FlowContainer"]
 layout_mode = 2
-text = " "
 icon = ExtResource("1_vgtvq")
 item_count = 2
 popup/item_0/text = "关于GalTalk"
@@ -656,13 +643,13 @@ layout_mode = 2
 text = "file"
 icon = ExtResource("1_rnlxc")
 item_count = 4
-popup/item_0/text = "new file"
+popup/item_0/text = "新建"
 popup/item_0/id = 0
-popup/item_1/text = "open file"
+popup/item_1/text = "打开"
 popup/item_1/id = 1
-popup/item_2/text = "save file"
+popup/item_2/text = "保存"
 popup/item_2/id = 2
-popup/item_3/text = "exit"
+popup/item_3/text = "退出场景编辑器"
 popup/item_3/id = 3
 script = SubResource("GDScript_4shef")
 
@@ -706,9 +693,9 @@ layout_mode = 2
 text = "sound"
 icon = ExtResource("6_ggjxu")
 item_count = 2
-popup/item_0/text = "sound"
+popup/item_0/text = "设定音效"
 popup/item_0/id = 0
-popup/item_1/text = "music"
+popup/item_1/text = "设定音乐"
 popup/item_1/id = 1
 script = SubResource("GDScript_nlk30")
 
@@ -720,9 +707,9 @@ layout_mode = 2
 text = "character"
 icon = ExtResource("6_b8w0n")
 item_count = 2
-popup/item_0/text = "edit role"
+popup/item_0/text = "编辑器窗口"
 popup/item_0/id = 0
-popup/item_1/text = "role anime"
+popup/item_1/text = "角色动画"
 popup/item_1/id = 1
 script = SubResource("GDScript_myd5j")
 
@@ -734,9 +721,9 @@ layout_mode = 2
 text = "text"
 icon = ExtResource("10_svw3l")
 item_count = 2
-popup/item_0/text = "text edit"
+popup/item_0/text = "文本编辑"
 popup/item_0/id = 0
-popup/item_1/text = "text style"
+popup/item_1/text = "样式"
 popup/item_1/id = 1
 script = SubResource("GDScript_qrqo1")
 

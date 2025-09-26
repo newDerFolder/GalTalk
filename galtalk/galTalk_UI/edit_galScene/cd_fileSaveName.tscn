@@ -10,7 +10,9 @@ func _ready() -> void:
 		$VBoxContainer/te_filePath.text=get_parent().get_parent().file_path
 
 func _process(delta: float) -> void:
-	if check_file_exists($VBoxContainer/te_filePath.text+$VBoxContainer/te_fileName.text+\".json\"):
+	if check_file_exists($VBoxContainer/te_filePath.text+$VBoxContainer/te_fileName.text+\".gals\"):
+		$VBoxContainer/Label.visible=true
+	elif check_file_exists($VBoxContainer/te_filePath.text+$VBoxContainer/te_fileName.text+\".json\"):
 		$VBoxContainer/Label.visible=true
 	else:
 		$VBoxContainer/Label.visible=false
@@ -31,7 +33,10 @@ func _on_confirmed() -> void:
 	if $VBoxContainer/te_fileName.text!=\"\" and $VBoxContainer/te_filePath.text!=\"\":
 		get_parent().get_parent().file_name=$VBoxContainer/te_fileName.text
 		get_parent().get_parent().file_path=$VBoxContainer/te_filePath.text
-		get_parent().get_parent().save_galTalkScene_file()
+		if $VBoxContainer/niceJson.button_pressed:
+			get_parent().get_parent().save_galTalkScene_file()
+		else:
+			get_parent().get_parent().save_galTalkScene_file()
 		queue_free()
 	pass # Replace with function body.
 
@@ -42,7 +47,7 @@ func check_file_exists(file_path: String) -> bool:
 
 [node name="CdTalkText" type="ConfirmationDialog"]
 title = "保存GalTalk场景工程文件(json)"
-size = Vector2i(400, 215)
+size = Vector2i(400, 224)
 visible = true
 script = SubResource("GDScript_1n1w2")
 
@@ -50,7 +55,7 @@ script = SubResource("GDScript_1n1w2")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 392.0
-offset_bottom = 166.0
+offset_bottom = 161.0
 
 [node name="te_fileName" type="TextEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
@@ -74,6 +79,12 @@ visible = false
 self_modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 text = "文件或路径名称不能为空"
+
+[node name="niceJson" type="CheckBox" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "花样.json为.gals(不影响读写)"
 
 [connection signal="canceled" from="." to="." method="_on_canceled"]
 [connection signal="confirmed" from="." to="." method="_on_confirmed"]

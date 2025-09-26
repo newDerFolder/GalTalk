@@ -1,9 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6f6x6hr3fpd7"]
+[gd_scene load_steps=4 format=3 uid="uid://b6f6x6hr3fpd7"]
 
 [sub_resource type="GDScript" id="GDScript_k17pp"]
 script/source = "extends AcceptDialog
 
 var setting_AutoScoEnd=true
+
+func getMainNode():
+	return get_parent().get_parent()
 
 func _ready() -> void:
 	#get_ok_button().visible=false
@@ -20,7 +23,7 @@ func add_talk():
 		$VBoxContainer/ScrollContainer/VBoxContainer.add_child(a)
 
 func _process(delta: float) -> void:
-	$VBoxContainer/ScrollContainer.size=size-Vector2i(0,80)
+	$VBoxContainer/ScrollContainer.size=size-Vector2i(0,120)
 	$VBoxContainer/Panel.size.x=size.x
 	
 	if $\"../..\".story_list.size()>=500:
@@ -58,8 +61,23 @@ func _on_confirmed() -> void:
 	queue_free()
 "
 
+[sub_resource type="GDScript" id="GDScript_7akun"]
+script/source = "extends Button
+
+func _pressed() -> void:
+	$\"../../..\".getMainNode().add_newTalk()
+"
+
+[sub_resource type="GDScript" id="GDScript_r0j60"]
+script/source = "extends Button
+
+func _pressed() -> void:
+	$\"../../..\".getMainNode().add_copyTalk()
+"
+
 [node name="TalkList" type="AcceptDialog"]
 auto_translate_mode = 1
+oversampling_override = 1.0
 title = "talk list"
 initial_position = 2
 size = Vector2i(400, 600)
@@ -88,11 +106,29 @@ layout_mode = 2
 button_pressed = true
 text = "自动到底"
 
+[node name="btn_goNowTalk" type="Button" parent="VBoxContainer/Panel"]
+layout_mode = 2
+text = "goNow talk"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="newTalk" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "add new talk"
+script = SubResource("GDScript_7akun")
+
+[node name="copyTalk" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "copy talk and creat"
+script = SubResource("GDScript_r0j60")
 
 [connection signal="canceled" from="." to="." method="_on_canceled"]
 [connection signal="confirmed" from="." to="." method="_on_confirmed"]
