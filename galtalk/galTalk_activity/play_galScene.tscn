@@ -172,8 +172,6 @@ func can_change():
 func chang_talk():
 	if $\"..\".story_list[$\"..\".now_talk].has(\"background\"):
 		$background.texture=load($\"..\".story_list[$\"..\".now_talk][\"background\"])
-	else:
-		$background.texture=load(\"res://addons/galtalk/galTalk_sc/galTalkBackground.png\")
 	if $\"..\".story_list[$\"..\".now_talk].has(\"background_sizeX\"):
 		$background.size.x=$\"..\".story_list[$\"..\".now_talk][\"background_sizeX\"]
 		$background.size.y=$\"..\".story_list[$\"..\".now_talk][\"background_sizeY\"]

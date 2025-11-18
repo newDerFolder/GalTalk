@@ -399,6 +399,9 @@ func _on_menu_button_pressed(id):
 			cd_sizeSet.position=Vector2(200,200)
 			cd_sizeSet.connect(\"tree_exited\",Callable(self,\"upData\"))
 			get_parent().get_parent().add_child(cd_sizeSet)
+		3:
+			$\"../../..\".story_list[$\"../../..\".now_talk][\"background\"]=\"no\"
+			$\"../../../game\".chang_talk()
 
 func choose_brackground_res():
 	var file_dialog = FileDialog.new()
@@ -689,13 +692,15 @@ layout_mode = 2
 layout_mode = 2
 text = "scene"
 icon = ExtResource("4_raljn")
-item_count = 3
+item_count = 4
 popup/item_0/text = "background"
 popup/item_0/id = 0
 popup/item_1/text = "background size"
 popup/item_1/id = 1
 popup/item_2/text = "background pos"
 popup/item_2/id = 2
+popup/item_3/text = "remove background"
+popup/item_3/id = 3
 script = SubResource("GDScript_8qhn5")
 
 [node name="VSeparator4" type="VSeparator" parent="toolBar/FlowContainer"]
