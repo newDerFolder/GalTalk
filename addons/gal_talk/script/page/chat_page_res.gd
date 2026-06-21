@@ -1,0 +1,1 @@
+class_name ChatPageNode extends Node2D

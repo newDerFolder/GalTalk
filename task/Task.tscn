@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://0fwrxy5qfj1e"]
-
-[ext_resource type="Script" uid="uid://bvvugopscebt3" path="res://task/task.gd" id="1_4ta5i"]
-
-[node name="Task" type="Node" unique_id=124753489]
-script = ExtResource("1_4ta5i")
-metadata/_custom_type_script = "uid://bbm0y0mmynlb4"
