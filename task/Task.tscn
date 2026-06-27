@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://0fwrxy5qfj1e"]
+
+[ext_resource type="Script" uid="uid://cfmghsgc80xv8" path="res://addons/gal_talk/script/page/TalkPageNode.gd" id="1_4ta5i"]
+
+[sub_resource type="GDScript" id="GDScript_jx58m"]
+script/source = "extends Gal_gdsPlayer
+
+func _ready() -> void:
+	bg(\"res://addons/gal_talk/asset/background/park.png\")
+	await tap()
+	setBg()
+
+
+func setBg():
+	bg(\"res://addons/gal_talk/asset/background/Library.png\")
+"
+
+[node name="Task" type="Node" unique_id=124753489]
+script = SubResource("GDScript_jx58m")
+
+[node name="TalkPageNode" type="Node2D" parent="." unique_id=760437670]
+script = ExtResource("1_4ta5i")
+metadata/_custom_type_script = "uid://cfmghsgc80xv8"

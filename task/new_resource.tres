@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TalkPageResource" format=3 uid="uid://bufjufsgm522u"]
+
+[ext_resource type="Script" uid="uid://cf2m1r35q1fp1" path="res://addons/gal_talk/script/res/BaseTalkResource.gd" id="1_kvil4"]
+[ext_resource type="Script" uid="uid://dljqvcrojs8dh" path="res://addons/gal_talk/script/res/command/Gal_BaseCommandResource.gd" id="2_k5osj"]
+[ext_resource type="Script" uid="uid://cnt62ei2exoap" path="res://addons/gal_talk/script/res/TalkPageRes.gd" id="2_mib2k"]
+[ext_resource type="Script" uid="uid://efrb5a4q0p0s" path="res://addons/gal_talk/script/res/TalkResource.gd" id="3_rjv58"]
+
+[sub_resource type="Resource" id="Resource_4ta5i"]
+script = ExtResource("3_rjv58")
+command = Array[ExtResource("2_k5osj")]([null])
+metadata/_custom_type_script = "uid://efrb5a4q0p0s"
+
+[resource]
+script = ExtResource("2_mib2k")
+arr = Array[ExtResource("1_kvil4")]([SubResource("Resource_4ta5i")])
+metadata/_custom_type_script = "uid://cnt62ei2exoap"

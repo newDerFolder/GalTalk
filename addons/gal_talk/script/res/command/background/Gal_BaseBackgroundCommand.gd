@@ -1,0 +1,1 @@
+@abstract class_name Gal_BaseBackgroundCommand extends Resource
