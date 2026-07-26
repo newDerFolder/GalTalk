@@ -54,4 +54,5 @@ func play_talk():
 		add_BgTextNode(cur_block)
 	elif cur_block is Gal_BgImageSet:
 		bg.texture=cur_block.image
+		play_talk()
 		
