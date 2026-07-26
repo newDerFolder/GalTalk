@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://dygt4bojsxx84"]
+
+[ext_resource type="Script" uid="uid://bfpw5csg8lvh3" path="res://addons/gal_talk/script/node/Gal_PlayerNode.gd" id="1_2i8dn"]
+[ext_resource type="Script" uid="uid://c7jgqmqg0u4nj" path="res://addons/gal_talk/script/res/Gal_Block.gd" id="2_bfaog"]
+[ext_resource type="Script" uid="uid://cfeo56ihhqv5w" path="res://addons/gal_talk/script/res/Gal_BgText.gd" id="3_hwv2n"]
+
+[sub_resource type="GDScript" id="GDScript_hwv2n"]
+script/source = "extends Node
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	$Gal_PlayerNode.play_talk()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="Resource" id="Resource_bfaog"]
+script = ExtResource("2_bfaog")
+metadata/_custom_type_script = "uid://c7jgqmqg0u4nj"
+
+[sub_resource type="Resource" id="Resource_tdk0t"]
+script = ExtResource("3_hwv2n")
+metadata/_custom_type_script = "uid://cfeo56ihhqv5w"
+
+[sub_resource type="Resource" id="Resource_2i8dn"]
+script = ExtResource("2_bfaog")
+arr = Array[ExtResource("2_bfaog")]([SubResource("Resource_bfaog"), SubResource("Resource_tdk0t")])
+metadata/_custom_type_script = "uid://c7jgqmqg0u4nj"
+
+[node name="Talk1" type="Node" unique_id=662776595]
+script = SubResource("GDScript_hwv2n")
+
+[node name="Gal_PlayerNode" type="Control" parent="." unique_id=944457977]
+physics_interpolation_mode = 0
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2i8dn")
+talk = SubResource("Resource_2i8dn")
+metadata/_custom_type_script = "uid://bfpw5csg8lvh3"

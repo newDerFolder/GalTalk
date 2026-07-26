@@ -1,0 +1,1 @@
+class_name Gal_BaseBlock extends Resource
