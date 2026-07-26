@@ -1,3 +1,0 @@
-@abstract
-class_name Gal_BaseCommandResource
-extends Resource

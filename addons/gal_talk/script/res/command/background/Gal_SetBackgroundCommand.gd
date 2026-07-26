@@ -1,4 +1,0 @@
-class_name Gal_SetBackgroundCommand extends Gal_BaseBackgroundCommand
-
-
-@export var background_res:Texture2D
