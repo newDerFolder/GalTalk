@@ -67,4 +67,7 @@ func play_talk(target_index: int = -1):
 	elif cur_block is Gal_BgImageSet:
 		bg.texture = cur_block.image
 		if cur_block.auto_continue:
-			play_talk()  # 注意：这里递归调用不带参数，走正常顺序
+			play_talk()
+	elif cur_block is Gal_Label:
+		if cur_block.auto_continue:
+			play_talk()

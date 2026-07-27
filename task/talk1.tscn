@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bckuybr4o07iq" path="res://addons/gal_talk/asset/background/park.png" id="3_neyc4"]
 [ext_resource type="Script" uid="uid://bauwt6fxt6vna" path="res://addons/gal_talk/script/res/Gal_BgImageSet.gd" id="4_qkbc1"]
 [ext_resource type="Script" uid="uid://olx0es7aobh3" path="res://addons/gal_talk/script/res/Gal_Stage.gd" id="4_tdk0t"]
+[ext_resource type="Script" uid="uid://b021yncwgqw4f" path="res://addons/gal_talk/script/res/Gal_Label.gd" id="5_qkbc1"]
 
 [sub_resource type="GDScript" id="GDScript_hwv2n"]
 script/source = "extends Node
@@ -14,6 +15,7 @@ script/source = "extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Gal_PlayerNode.play_talk()
+	#$Gal_PlayerNode.jump_to_lab(\"关键时刻\")
 "
 
 [sub_resource type="Resource" id="Resource_tdk0t"]
@@ -22,19 +24,24 @@ image = ExtResource("3_neyc4")
 auto_continue = false
 metadata/_custom_type_script = "uid://bauwt6fxt6vna"
 
+[sub_resource type="Resource" id="Resource_neyc4"]
+script = ExtResource("5_qkbc1")
+label_name = "关键时刻"
+metadata/_custom_type_script = "uid://b021yncwgqw4f"
+
 [sub_resource type="Resource" id="Resource_hwv2n"]
 script = ExtResource("3_hwv2n")
 text = "no text sdawdaksdksa"
 metadata/_custom_type_script = "uid://cfeo56ihhqv5w"
 
-[sub_resource type="Resource" id="Resource_neyc4"]
+[sub_resource type="Resource" id="Resource_lqm58"]
 script = ExtResource("3_hwv2n")
 text = "yesno text"
 metadata/_custom_type_script = "uid://cfeo56ihhqv5w"
 
 [sub_resource type="Resource" id="Resource_bfaog"]
 script = ExtResource("4_tdk0t")
-arr = Array[ExtResource("2_bfaog")]([SubResource("Resource_tdk0t"), SubResource("Resource_hwv2n"), SubResource("Resource_neyc4")])
+arr = Array[ExtResource("2_bfaog")]([SubResource("Resource_tdk0t"), SubResource("Resource_neyc4"), SubResource("Resource_hwv2n"), SubResource("Resource_lqm58")])
 metadata/_custom_type_script = "uid://olx0es7aobh3"
 
 [node name="Talk1" type="Node" unique_id=662776595]
